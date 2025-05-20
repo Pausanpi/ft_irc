@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Main.cpp                                           :+:      :+:    :+:   */
+/*   Quit.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/19 17:47:30 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 16:11:36 by pausanch         ###   ########.fr       */
+/*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
+/*   Updated: 2025/05/20 16:13:16 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/Server.hpp"
+#include "../../includes/CommandHandler.hpp"
 
-int main() {
-    Server server;
-    server.run();
-    return 0;
+void CommandHandler::handleQUIT(Client &client, std::istringstream &iss) {
+	(void)iss; // Unused parameter
+    client.sendMessage("Goodbye!\r\n");
+    client.clear();
 }

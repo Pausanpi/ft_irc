@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:34:15 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 12:56:52 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 16:05:46 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ public:
 
     void addMember(Client* client);
     void removeMember(Client* client);
+	
     const std::set<Client*>& getMembers() const;
 };
 

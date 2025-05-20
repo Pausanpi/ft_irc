@@ -6,12 +6,12 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:35:05 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 12:42:01 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 16:11:57 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Channel.hpp"
-#include "Client.hpp"
+#include "../includes/Channel.hpp"
+#include "../includes/Client.hpp"
 
 Channel::Channel() : _name("default") {}
 

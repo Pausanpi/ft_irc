@@ -6,11 +6,11 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:40:17 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 11:15:10 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 16:14:01 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Client.hpp"
+#include "../includes/Client.hpp"
 
 Client::Client() : _fd(0), _registered(false) {}
 

@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:46:39 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 12:43:56 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 15:26:13 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,16 @@ public:
     ~Server();
 
     void run(); // Main loop
-
+	void initSocket();
+	void acceptNewClient();
+	void handleClientData(int index);
+	void removeClient(int index);
+	void handleInput(Client &client, const std::string &input);
+	
 private:
     int _serverFd;
     Client _clients[MAX_CLIENTS];
-
-    void initSocket();
-    void acceptNewClient();
-    void handleClientData(int index);
-    void removeClient(int index);
-    void handleInput(Client &client, const std::string &input);
 };
+
 
 #endif

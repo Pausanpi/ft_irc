@@ -6,11 +6,12 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 13:23:33 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 16:11:23 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Server.hpp"
+#include "../includes/Server.hpp"
+#include "../includes/CommandHandler.hpp"
 std::map<std::string, Channel> _channels;
 
 Server::Server() {
@@ -135,109 +136,19 @@ void Server::handleInput(Client &client, const std::string &input) {
     std::string command;
     iss >> command;
 
+    CommandHandler handler(_clients, _channels);
+    
     if (command == "NICK") {
-        std::string nick;
-        iss >> nick;
-        client.setNickname(nick);
+        handler.handleNICK(client, iss);
     } else if (command == "USER") {
-        std::string user, a, b, real;
-        iss >> user >> a >> b;
-        std::getline(iss, real);
-        client.setUsername(user);
-        client.registerUser();
-
-        std::ostringstream oss;
-        oss << ":irc 001 " << client.getNickname()
-            << " :Welcome to ft_irc, " << client.getNickname() << "!\r\n";
-        client.sendMessage(oss.str());
+        handler.handleUSER(client, iss);
     } else if (command == "PRIVMSG") {
-		std::string target;
-		iss >> target;
-
-		std::string msg;
-		std::getline(iss, msg);
-
-		// Remove leading spaces
-		size_t pos = msg.find_first_not_of(' ');
-		if (pos != std::string::npos) {
-			msg = msg.substr(pos);
-		} else {
-			msg.clear(); // no message content
-		}
-
-		// Remove leading ':' if present (common in IRC protocol)
-		if (!msg.empty() && msg[0] == ':') {
-			msg = msg.substr(1);
-		}
-
-		std::ostringstream oss;
-		oss << ":" << client.getNickname()
-			<< " PRIVMSG " << target << " :" << msg << "\r\n";
-		std::string fullMsg = oss.str();
-
-		if (!target.empty() && target[0] == '#') {
-			// Message to channel
-			std::map<std::string, Channel>::iterator it = _channels.find(target);
-			if (it != _channels.end()) {
-				Channel &channel = it->second;
-				const std::set<Client *> &members = channel.getMembers();
-
-				// Check if sender is in the channel members
-				if (members.find(&client) == members.end()) {
-					// Client is NOT in the channel, reject sending message
-					// Optionally send an error message back to client:
-					client.sendMessage("404 " + client.getNickname() + " " + target + " :Cannot send to channel (not a member)\r\n");
-					return;
-				}
-
-				// Client is in the channel, send the message to all other members
-				for (std::set<Client *>::const_iterator iter = members.begin(); iter != members.end(); ++iter) {
-					Client *member = *iter;
-					if (member->getFd() != client.getFd()) {
-						member->sendMessage(fullMsg);
-					}
-				}
-			} else {
-				// Channel not found: optionally handle error
-				client.sendMessage("403 " + client.getNickname() + " " + target + " :No such channel\r\n");
-			}
-		} else {
-			// Message to user
-			for (int i = 0; i < MAX_CLIENTS; ++i) {
-				if (_clients[i].getFd() > 0 && _clients[i].getNickname() == target) {
-					_clients[i].sendMessage(fullMsg);
-					break;
-				}
-			}
-		}
-
-	} else if (command == "JOIN") {
-        std::string chanName;
-        iss >> chanName;
-
-        if (chanName.empty()) {
-            client.sendMessage(":irc 461 JOIN :Not enough parameters\r\n");
-            return;
-        }
-
-        // Create channel if it doesn't exist
-        if (_channels.find(chanName) == _channels.end()) {
-            _channels.insert(std::make_pair(chanName, Channel(chanName)));
-        }
-
-        // Add client to the channel
-        Channel& channel = _channels[chanName];
-        channel.addMember(&client);
-
-        std::ostringstream joinMsg;
-        joinMsg << ":" << client.getNickname() << " JOIN " << chanName << "\r\n";
-        client.sendMessage(joinMsg.str());
-    } else if (command == "QUIT") { //esto hay que cambiarlo
-        client.sendMessage("Goodbye!\r\n");
-        client.clear();
+        handler.handlePRIVMSG(client, iss);
+    } else if (command == "JOIN") {
+        handler.handleJOIN(client, iss);
+    } else if (command == "QUIT") {
+        handler.handleQUIT(client, iss);
+    } else {
+        std::cout << "Unknown command: " << command << std::endl;
     }
-	else {
-		std::cout << "Unknown command: " << command << std::endl;
-	}
 }
-
