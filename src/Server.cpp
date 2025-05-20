@@ -6,19 +6,11 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/19 17:47:19 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 11:14:56 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
-#include <iostream>
-#include <sstream>
-#include <cstring>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
 
 Server::Server() {
     initSocket();
@@ -171,13 +163,7 @@ void Server::handleInput(Client &client, const std::string &input) {
                 break;
             }
         }
-    } else if (command == "PING") {
-        std::string ping;
-        iss >> ping;
-        std::ostringstream oss;
-        oss << "PONG :" << ping << "\r\n";
-        client.sendMessage(oss.str());
-    } else if (command == "QUIT") {
+    } else if (command == "QUIT") { //esto hay que cambiarlo
         client.sendMessage("Goodbye!\r\n");
         client.clear();
     }

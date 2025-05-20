@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   client.cpp                                         :+:      :+:    :+:   */
+/*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:39:46 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/19 17:39:52 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 11:15:14 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define CLIENT_HPP
 
 #include <string>
+#include <unistd.h>
+#include <sys/socket.h>
 
 class Client {
 public:
