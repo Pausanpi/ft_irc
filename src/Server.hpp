@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:46:39 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 11:14:59 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 12:43:56 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #define SERVER_HPP
 
 #include "Client.hpp"
+#include "Channel.hpp"
+#include <map>
 #include <string>
 #include <cstdlib>
 #include <cstdio>
@@ -29,6 +31,8 @@
 #define MAX_CLIENTS 10
 #define BUFFER_SIZE 1024
 #define PORT 6667
+
+extern std::map<std::string, Channel> _channels;
 
 class Server {
 public:

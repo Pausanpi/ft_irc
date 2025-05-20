@@ -6,11 +6,12 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 11:14:56 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 13:01:08 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+std::map<std::string, Channel> _channels;
 
 Server::Server() {
     initSocket();
@@ -20,18 +21,19 @@ Server::~Server() {
     close(_serverFd);
 }
 
+// Configura el servidor para que escuche conexiones entrantes
 void Server::initSocket() {
-    _serverFd = socket(AF_INET, SOCK_STREAM, 0);
+    _serverFd = socket(AF_INET, SOCK_STREAM, 0);  // Crear socket TCP
     if (_serverFd < 0) {
         perror("socket");
         exit(EXIT_FAILURE);
     }
 
     int opt = 1;
-    setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
+    setsockopt(_serverFd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)); // Permitir reutilizar el puerto
 
     struct sockaddr_in addr;
-    addr.sin_family = AF_INET;
+    addr.sin_family = AF_INET;  // Configuración de IPv4 y puerto
     addr.sin_port = htons(PORT);
     addr.sin_addr.s_addr = INADDR_ANY;
 
@@ -48,6 +50,10 @@ void Server::initSocket() {
     std::cout << "Server listening on port " << PORT << "..." << std::endl;
 }
 
+
+// Bucle principal del servidor
+// Se encarga de usar select() para detectar eventos en los sockets, aceptar nuevos clientes
+// y leer datos de los clientes existentes.
 void Server::run() {
     fd_set read_fds;
     int max_fd;
@@ -163,9 +169,33 @@ void Server::handleInput(Client &client, const std::string &input) {
                 break;
             }
         }
+	} else if (command == "JOIN") {
+        std::string chanName;
+        iss >> chanName;
+
+        if (chanName.empty()) {
+            client.sendMessage(":irc 461 JOIN :Not enough parameters\r\n");
+            return;
+        }
+
+        // Create channel if it doesn't exist
+        if (_channels.find(chanName) == _channels.end()) {
+            _channels.insert(std::make_pair(chanName, Channel(chanName)));
+        }
+
+        // Add client to the channel
+        Channel& channel = _channels[chanName];
+        channel.addMember(&client);
+
+        std::ostringstream joinMsg;
+        joinMsg << ":" << client.getNickname() << " JOIN " << chanName << "\r\n";
+        client.sendMessage(joinMsg.str());
     } else if (command == "QUIT") { //esto hay que cambiarlo
         client.sendMessage("Goodbye!\r\n");
         client.clear();
     }
+	else {
+		std::cout << "Unknown command: " << command << std::endl;
+	}
 }
 
