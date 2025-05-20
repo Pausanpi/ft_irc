@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 16:12:43 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 17:10:07 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss) {
     // Create channel if it doesn't exist
     if (_channels.find(chanName) == _channels.end()) {
         _channels.insert(std::make_pair(chanName, Channel(chanName)));
+		_channels[chanName].addMember(&client);
+		_channels[chanName].addOperator(&client);
     }
 
     // Add client to the channel

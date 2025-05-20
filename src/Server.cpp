@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 16:11:23 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 17:04:14 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,6 +148,8 @@ void Server::handleInput(Client &client, const std::string &input) {
         handler.handleJOIN(client, iss);
     } else if (command == "QUIT") {
         handler.handleQUIT(client, iss);
+	} else if (command == "MODE") {
+		handler.handleMODE(client, iss);
     } else {
         std::cout << "Unknown command: " << command << std::endl;
     }

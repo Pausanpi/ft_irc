@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:35:05 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 16:11:57 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/20 16:55:30 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,22 @@ void Channel::removeMember(Client* client) {
 
 const std::set<Client*>& Channel::getMembers() const {
     return _members;
+}
+
+void Channel::addOperator(Client* client) {
+	_operators.insert(client);
+}
+
+void Channel::removeOperator(Client* client) {
+	_operators.erase(client);
+}
+
+bool Channel::isOperator(Client* client) const {
+	return _operators.find(client) != _operators.end();
+}
+
+void Channel::broadcast(const std::string &msg) {
+	for (std::set<Client*>::const_iterator it = _members.begin(); it != _members.end(); ++it) {
+		(*it)->sendMessage(msg);
+	}
 }

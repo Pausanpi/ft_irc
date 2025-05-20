@@ -1,6 +1,7 @@
 NAME = ircserver
 INCLUDE = includes
 SRC_DIR = src
+OBJ_DIR = obj
 CC = c++
 CFLAGS = -Wall -Wextra -Werror -std=c++98
 AR = ar rcs
@@ -22,31 +23,36 @@ WHITE = $(shell tput setaf 7)
 SRC_FILES = Main.cpp Server.cpp Client.cpp Channel.cpp \
 			commands/CommandHandler.cpp \
 			commands/Join.cpp commands/NickUser.cpp commands/Privmsg.cpp \
-			commands/Quit.cpp \
+			commands/Quit.cpp commands/Mode.cpp \
 
-OBJS = $(SRCS:src/%.c=obj/%.o)
+SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
+OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.cpp=.o))
 
 ###########################################################################
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-			@$(CC) -I./$(INCLUDE) $(CFLAGS) $(OBJS) -o $(NAME) 
+$(NAME): $(OBJ)
+			@$(CC) -I./$(INCLUDE) $(CFLAGS) $(OBJ) -o $(NAME) 
 			@echo "$(GREEN)$(NAME) compiled!$(DEF_COLOR)"
 
-obj/%.o: src/%.c
-	@mkdir -p obj
-	@echo "Compiling $<..."
-	@$(CC) $(CFLAGS) -c $< -o $@ $(HEADERS)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJF)
+			@echo "$(YELLOW)Compiling: $< $(DEF_COLOR)"
+			@$(CC) -I./$(INCLUDE) $(CFLAGS) -c $< -o $@
+
+$(OBJF):
+			@mkdir -p $(OBJ_DIR)
+			@mkdir -p $(OBJ_DIR)/commands
+			@mkdir -p $(OBJ_DIR) $(OBJ_DIR)/commands
 
 clean:
-			@clear
-			@rm -rf obj
+			@rm $(OBJF)
+			@rm -rf $(OBJ_DIR)
 			@echo "$(BLUE)$(NAME) object files cleaned!$(DEF_COLOR)"
 
 fclean:		
-			@clear
-			@rm -rf obj
+			@rm $(OBJF)
+			@rm -rf $(OBJ_DIR)
 			@rm -f $(NAME)
 			@echo "$(BLUE)$(NAME) executable cleaned!$(DEF_COLOR)"
 
