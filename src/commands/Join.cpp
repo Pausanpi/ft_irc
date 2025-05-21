@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/21 11:28:55 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/21 12:26:25 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,26 +23,42 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss) {
         return;
     }
 
-    // Create channel if it doesn't exist
-    if (_channels.find(chanName) == _channels.end()) {
-        _channels.insert(std::make_pair(chanName, Channel(chanName)));
-		_channels[chanName].addMember(&client);
-		_channels[chanName].addOperator(&client);
+    // Verificar si el canal existe
+    bool isNewChannel = (_channels.find(chanName) == _channels.end());
+    
+    if (isNewChannel) {
+        // Crear canal y hacer al creador operador
+        _channels[chanName] = Channel(chanName);
+        _channels[chanName].addMember(&client);
+        _channels[chanName].addOperator(&client);
     }
 
-	/* Channel& channel = _channels[chanName];
-
-	// Check if the client is already in the channel
-	if (channel.getMembers().count(&client)) {
-		client.sendMessage(":irc 443 " + client.getNickname() + " " + chanName + " :is already on channel\r\n");
-		return;
-	} */
-
-    // Add client to the channel
     Channel& channel = _channels[chanName];
-    channel.addMember(&client);
 
-    std::ostringstream joinMsg;
-    joinMsg << ":" << client.getNickname() << " JOIN " << chanName << "\r\n";
-    client.sendMessage(joinMsg.str());
+    // --- Verificaciones para canales existentes ---
+    if (!isNewChannel) {
+        // 1. ¿El canal es +i y el cliente NO está invitado?
+        if (channel.hasMode('i') && !channel.isInvited(&client)) {
+            client.sendMessage(":irc 473 " + client.getNickname() + " " + chanName + " :Cannot join channel (+i)\r\n");
+            return;
+        }
+
+        // 2. ¿El cliente ya está en el canal?
+        if (channel.getMembers().count(&client)) {
+            client.sendMessage(":irc 443 " + client.getNickname() + " " + chanName + " :is already on channel\r\n");
+            return;
+        }
+    }
+
+    // --- Unir al cliente ---
+    channel.addMember(&client);
+    
+    // Si fue invitado, limpiar la invitación (opcional)
+    if (channel.isInvited(&client)) {
+        channel.removeInvited(&client);
+    }
+
+    // Broadcast del JOIN a todos en el canal
+    std::string joinMsg = ":" + client.getNickname() + " JOIN " + chanName + "\r\n";
+    channel.broadcast(joinMsg);
 }

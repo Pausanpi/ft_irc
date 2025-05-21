@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/21 11:21:12 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/21 12:15:14 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ public:
 	void handleMODE(Client &client, std::istringstream &iss);
 	void handleKICK(Client &client, std::istringstream &iss);
 	void handleINVITE(Client &inviter, std::istringstream &iss);
+
+	Client* findClientByNick(const std::string &nick);
 };
 
 #endif // COMMAND_HANDLER_HPP

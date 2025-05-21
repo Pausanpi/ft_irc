@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:53:43 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 16:54:04 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/21 12:06:18 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,8 @@ void CommandHandler::handleMODE(Client &client, std::istringstream &iss) {
         }
         client.sendMessage(":irc 401 " + nick + " :No such nick\r\n");
     }
+	else if (mode == "+i"){
+		channel.addMode('i');
+		channel.broadcast(":" + client.getNickname() + " MODE " + target + " +i\r\n");
+	}
 }

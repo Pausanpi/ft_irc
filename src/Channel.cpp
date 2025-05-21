@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:35:05 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/21 11:23:17 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/21 12:21:11 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,10 +55,31 @@ void Channel::addInvited(Client* client) {
 	_invited.insert(client);
 }
 
-bool Channel::inInvited(Client* client) const {
+bool Channel::isInvited(Client* client) const {
 	return _invited.find(client) != _invited.end();
 }
 
 bool Channel::isInviteOnly() const {
 	return _inviteOnly;
+}
+
+void Channel::removeInvited(Client* client) {
+	_invited.erase(client);
+}
+
+void Channel::addMode(char mode) {
+	if (_modes.find(mode) == std::string::npos) {
+		_modes += mode;
+	}
+}
+
+void Channel::removeMode(char mode) {
+	size_t pos = _modes.find(mode);
+	if (pos != std::string::npos) {
+		_modes.erase(pos, 1);
+	}
+}
+
+bool Channel::hasMode(char mode) const {
+	return _modes.find(mode) != std::string::npos;
 }
