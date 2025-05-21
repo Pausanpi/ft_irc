@@ -36,23 +36,17 @@ $(NAME): $(OBJ)
 			@$(CC) -I./$(INCLUDE) $(CFLAGS) $(OBJ) -o $(NAME) 
 			@echo "$(GREEN)$(NAME) compiled!$(DEF_COLOR)"
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJF)
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+			@mkdir -p $(@D)
+			@echo "$(BLUE)Created directory: $(@D)$(DEF_COLOR)"
 			@echo "$(YELLOW)Compiling: $< $(DEF_COLOR)"
 			@$(CC) -I./$(INCLUDE) $(CFLAGS) -c $< -o $@
 
-$(OBJF):
-			@mkdir -p $(OBJ_DIR)
-			@mkdir -p $(OBJ_DIR)/commands
-			@mkdir -p $(OBJ_DIR) $(OBJ_DIR)/commands
-
 clean:
-			@rm $(OBJF)
 			@rm -rf $(OBJ_DIR)
 			@echo "$(BLUE)$(NAME) object files cleaned!$(DEF_COLOR)"
 
-fclean:		
-			@rm $(OBJF)
-			@rm -rf $(OBJ_DIR)
+fclean:		clean
 			@rm -f $(NAME)
 			@echo "$(BLUE)$(NAME) executable cleaned!$(DEF_COLOR)"
 
