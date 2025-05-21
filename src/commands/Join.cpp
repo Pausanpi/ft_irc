@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 17:10:07 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/21 11:28:55 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,14 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss) {
 		_channels[chanName].addMember(&client);
 		_channels[chanName].addOperator(&client);
     }
+
+	/* Channel& channel = _channels[chanName];
+
+	// Check if the client is already in the channel
+	if (channel.getMembers().count(&client)) {
+		client.sendMessage(":irc 443 " + client.getNickname() + " " + chanName + " :is already on channel\r\n");
+		return;
+	} */
 
     // Add client to the channel
     Channel& channel = _channels[chanName];

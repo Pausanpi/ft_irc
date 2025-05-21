@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:34:15 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 16:55:17 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/21 11:23:11 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@ private:
     std::string _name;
     std::set<Client*> _members;
 	std::set<Client*> _operators;
+	std::set<Client*> _invited;
+	bool _inviteOnly;
 
 public:
 	Channel();
@@ -38,6 +40,10 @@ public:
 	void removeOperator(Client* client);
 	bool isOperator(Client* client) const;
 	void broadcast(const std::string &msg);
+
+	void addInvited(Client* client);
+	bool inInvited(Client* client) const;
+	bool isInviteOnly() const;
 };
 
 #endif
