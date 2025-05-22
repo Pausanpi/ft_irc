@@ -6,14 +6,14 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/21 12:15:27 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/22 11:45:16 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/CommandHandler.hpp"
 
 CommandHandler::CommandHandler(Client* clients, std::map<std::string, Channel>& channels)
-    : _clients(clients), _channels(channels) {
+    : _clients(clients), _channels(channels){
 }
 
 CommandHandler::~CommandHandler() {

@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:53:43 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/21 12:06:18 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/22 11:44:27 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void CommandHandler::handleMODE(Client &client, std::istringstream &iss) {
             if (_clients[i].getNickname() == nick) {
                 channel.addOperator(&_clients[i]);
                 std::string msg = ":" + client.getNickname() + " MODE " + target + " +o " + nick + "\r\n";
-                channel.broadcast(msg);  // Asegúrate de implementar broadcast en Channel
+                channel.broadcast(msg);
                 return;
             }
         }

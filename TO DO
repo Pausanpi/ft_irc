@@ -1,8 +1,3 @@
-Ya se dan bien los privilegios
-Ahora hay que hacer el KICK
+habría que actualizar los constructores del channel
 
-MAKEFILE mierdoso
-Hacer bien -> Trabajo de Laureano
-
-Para compilar sin Makefile entrar en la carpeta src y usar este comando:
-c++ -std=c++98 -Wall -Wextra -Werror *.cpp commands/*.cpp -o irc_server
+mejorar que QUIT
