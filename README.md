@@ -1,6 +1,6 @@
 # IRC Server
 
-Este proyecto implementa un **servidor IRC (Internet Relay Chat)** básico en C++. El servidor permite que múltiples clientes se conecten simultáneamente para chatear en tiempo real a través de canales. :shipit:
+Este proyecto implementa un **servidor IRC (Internet Relay Chat)** básico en C++. El servidor permite que múltiples clientes se conecten simultáneamente para chatear en tiempo real a través de canales :shipit:
 
 ## ¿Qué es IRC?
 
@@ -47,3 +47,34 @@ IRC es un protocolo de comunicación que permite el intercambio de mensajes de t
 ## Comandos IRC Implementados
 El servidor maneja los siguentes comandos básicos de IRC con sus respectivas validaciones:
 
+### Comandos de Registro
+* **NICK:** Establece o cambia el nickname del usuario
+* **USER:** Registra la información del usuario y completa el proceso de autenticación
+
+### Comandos de Comunicación
+* **PRIVMSG:** Envía mensajes privados a usuarios o mensajes públicos a canales
+   * Verifica que el usuario esté en el canal antes de enviar mensajes
+   * Maneja tanto mensajes directos como mensajes de canal
+
+* **JOIN:** Permite unirse a un canal
+   * Crea automáticamente el canal si no existe
+   * El creador del canal se convierte en operador automáticamente
+   * Respeta el modo invite-only (+i) del canal
+   * Elimina invitaciones automáticamente al unirse
+ 
+### Comandos de Administración (Solo Operadores)
+* **MODE:** Modifica los modos de un canal
+   * `+o [nick]`: Otorga permisos de operador a un usuario
+   * `+i`: Activa el modo invite-only (solo por invitación)
+
+* **KICK:** Expulsa a un usuario de un canal
+   * Permite agregar una razón opcional para al expulsión
+   * Notificación a todos los miembros del canal
+   * Remueve al usuario de la lista de miembros y operadores
+ 
+* **INVITE:** Invita a un usuario a un canal con modo invite-only
+   * Solo operadores pueden invitar
+   * Envía notificación tanto al invitado como al que invita
+ 
+### Comandos de Desconexión
+* **QUIT:** Desconecta al usuario del servidor con mensaje de despedida
