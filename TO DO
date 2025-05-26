@@ -1,3 +1,32 @@
-habría que actualizar los constructores del channel
+NICK - USER -> OK
 
-mejorar que QUIT
+PRIVMSG -> OK
+
+JOIN + MODE +i + INVITE -> OK
+
+PRIVMSG canal -> OK
+
+KICK -> OK
+
+INVITE sin ser operador (no deja) -> OK
+
+QUIT -> OK pero mejorable
+
+
+
+COMANDOS
+- NICK nombre
+
+- USER nombre 0 * :Nombre  (no exactamente asi pero weno)
+
+- PRIVMSG nombre :mensaje
+
+- PRIVMSG #canal nombre :mensaje
+
+- JOIN #canal
+
+- MODE #canal +i (hace el canal privado)
+
+- INVITE nombre #canalprivado
+
+- KICK #canal nombre :razon
