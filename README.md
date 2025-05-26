@@ -11,7 +11,7 @@ IRC es un protocolo de comunicación que permite el intercambio de mensajes de t
 
 ## Componentes del Proyecto
 
-### Server (Servidor)
+### 🖥️Server (Servidor)
 * **Función:** Es el núcleo del sistema que gestiona todas las conexiones
 * **Características:**
     * Escuchar conexiones entrantes en un puerto específico
@@ -19,7 +19,7 @@ IRC es un protocolo de comunicación que permite el intercambio de mensajes de t
     * Procesa comandos IRC y los distribuye a los manejadores apropiados
     * Controla el flujo de datos entre clientes
  
-### Client (Cliente)
+### 👤Client (Cliente)
 * **Función:** Representa a cada usuario conectado al servidor
 * **Información que almacena:**
     * Nickname (apodo del usuario)
@@ -28,7 +28,7 @@ IRC es un protocolo de comunicación que permite el intercambio de mensajes de t
     * Estado de registro
 * **Capacidades:** Puede enviar y recibir mensajes
 
-### Channel (Canal)
+### 📺Channel (Canal)
 * **Función:** Representa una sala de char donde los usuarios pueden comunicarse
 * **Características:**
     * Mantiene una lista de miembros
@@ -36,7 +36,7 @@ IRC es un protocolo de comunicación que permite el intercambio de mensajes de t
     * Controla invitaciones y modos del canal
     * Permite broadcast de mensajes a todos los miembros
  
-### CommandHandler (Manejador de Comandos)
+### 🔧CommandHandler (Manejador de Comandos)
 * **Función:** Procesa y ejecuta todos los comandos IRC recibidos del cliente
 * **Características:**
     * Separa la lógica de comandos del servidor principal
@@ -47,11 +47,11 @@ IRC es un protocolo de comunicación que permite el intercambio de mensajes de t
 ## Comandos IRC Implementados
 El servidor maneja los siguentes comandos básicos de IRC con sus respectivas validaciones:
 
-### Comandos de Registro
+### 📝Comandos de Registro
 * **NICK:** Establece o cambia el nickname del usuario
 * **USER:** Registra la información del usuario y completa el proceso de autenticación
 
-### Comandos de Comunicación
+### 💬Comandos de Comunicación
 * **PRIVMSG:** Envía mensajes privados a usuarios o mensajes públicos a canales
    * Verifica que el usuario esté en el canal antes de enviar mensajes
    * Maneja tanto mensajes directos como mensajes de canal
@@ -62,7 +62,7 @@ El servidor maneja los siguentes comandos básicos de IRC con sus respectivas va
    * Respeta el modo invite-only (+i) del canal
    * Elimina invitaciones automáticamente al unirse
  
-### Comandos de Administración (Solo Operadores)
+### 👑Comandos de Administración (Solo Operadores)
 * **MODE:** Modifica los modos de un canal
    * `+o [nick]`: Otorga permisos de operador a un usuario
    * `+i`: Activa el modo invite-only (solo por invitación)
@@ -76,5 +76,5 @@ El servidor maneja los siguentes comandos básicos de IRC con sus respectivas va
    * Solo operadores pueden invitar
    * Envía notificación tanto al invitado como al que invita
  
-### Comandos de Desconexión
+### 🚪Comandos de Desconexión
 * **QUIT:** Desconecta al usuario del servidor con mensaje de despedida
