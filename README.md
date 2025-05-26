@@ -12,7 +12,7 @@ IRC es un protocolo de comunicación que permite el intercambio de mensajes de t
 ## Componentes del Proyecto
 
 ### Server (Servidor)
-* **Funció:** Es el núcleo del sistema que gestiona todas las conexiones
+* **Función:** Es el núcleo del sistema que gestiona todas las conexiones
 * **Características:**
     * Escuchar conexiones entrantes en un puerto específico
     * Maneja múltiples clientes simultáneamente usando `select()`
