@@ -1,6 +1,6 @@
 # IRC Server
 
-Este proyecto implementa un **servidor IRC (Internet Relay Chat)** básico en C++. El servidor permite que múltiples clientes se conecten simultáneamente para chatear en tiempo real a través de canales.
+Este proyecto implementa un **servidor IRC (Internet Relay Chat)** básico en C++. El servidor permite que múltiples clientes se conecten simultáneamente para chatear en tiempo real a través de canales. :shipit:
 
 ## ¿Qué es IRC?
 
