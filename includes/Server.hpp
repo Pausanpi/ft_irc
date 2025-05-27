@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:46:39 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 15:26:13 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/27 13:01:38 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,11 @@ extern std::map<std::string, Channel> _channels;
 class Server {
 public:
     Server();
+	Server(int port, const std::string &password);
     ~Server();
+
+	int getPort() const;
+	const std::string &getPassword() const;
 
     void run(); // Main loop
 	void initSocket();
@@ -47,6 +51,9 @@ public:
 	void handleInput(Client &client, const std::string &input);
 	
 private:
+	int _port;
+	std::string _password;
+
     int _serverFd;
     Client _clients[MAX_CLIENTS];
 };

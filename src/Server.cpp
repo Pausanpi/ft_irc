@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/21 12:13:12 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/27 13:15:30 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,20 @@ Server::Server() {
     initSocket();
 }
 
+Server::Server(int port, const std::string &password) : _port(port), _password(password) {
+	initSocket();
+}
+
 Server::~Server() {
     close(_serverFd);
+}
+
+int Server::getPort() const {
+	return _port;
+}
+
+const std::string &Server::getPassword() const {
+	return _password;
 }
 
 // Configura el servidor para que escuche conexiones entrantes
@@ -35,7 +47,7 @@ void Server::initSocket() {
 
     struct sockaddr_in addr;
     addr.sin_family = AF_INET;  // Configuración de IPv4 y puerto
-    addr.sin_port = htons(PORT);
+    addr.sin_port = htons(_port);
     addr.sin_addr.s_addr = INADDR_ANY;
 
     if (bind(_serverFd, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
@@ -48,7 +60,7 @@ void Server::initSocket() {
         exit(EXIT_FAILURE);
     }
 
-    std::cout << "Server listening on port " << PORT << "..." << std::endl;
+    std::cout << "Server listening on port " << _port << "..." << std::endl;
 }
 
 
@@ -137,24 +149,34 @@ void Server::handleInput(Client &client, const std::string &input) {
     iss >> command;
 
     CommandHandler handler(_clients, _channels);
-    
-    if (command == "NICK") {
-        handler.handleNICK(client, iss);
-    } else if (command == "USER") {
-        handler.handleUSER(client, iss);
-    } else if (command == "PRIVMSG") {
-        handler.handlePRIVMSG(client, iss);
-    } else if (command == "JOIN") {
-        handler.handleJOIN(client, iss);
-    } else if (command == "QUIT") {
-        handler.handleQUIT(client, iss);
-	} else if (command == "MODE") {
-		handler.handleMODE(client, iss);
-	} else if (command == "KICK") {
-		handler.handleKICK(client, iss);
-	} else if (command == "INVITE") {
-		handler.handleINVITE(client, iss);
-    } else {
-        std::cout << "Unknown command: " << command << std::endl;
-    }
+
+	if (command == "PASS") {
+		handler.handlePASS(client, iss, _password);
+	}
+	
+	if (client.getAuthenticated() == true && command != "PASS") {
+		if (command == "NICK") {
+			handler.handleNICK(client, iss);
+		} else if (command == "USER") {
+			handler.handleUSER(client, iss);
+		} else if (command == "PRIVMSG") {
+			handler.handlePRIVMSG(client, iss);
+		} else if (command == "JOIN") {
+			handler.handleJOIN(client, iss);
+		} else if (command == "QUIT") {
+			handler.handleQUIT(client, iss);
+		} else if (command == "MODE") {
+			handler.handleMODE(client, iss);
+		} else if (command == "KICK") {
+			handler.handleKICK(client, iss);
+		} else if (command == "INVITE") {
+			handler.handleINVITE(client, iss);
+		} else {
+			std::cout << "Unknown command: " << command << std::endl;
+		}
+	}
+	else if (client.getAuthenticated() == false)
+	{
+		std::cout << "Client not authenticated. Command ignored: " << command << std::endl;
+	}
 }

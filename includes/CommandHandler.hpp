@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/21 12:15:14 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/27 13:05:19 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ public:
     ~CommandHandler();
 
     // Métodos para manejar los diferentes comandos
+	void handlePASS(Client &client, std::istringstream &iss, const std::string &password);
     void handleNICK(Client &client, std::istringstream &iss);
     void handleUSER(Client &client, std::istringstream &iss);
     void handlePRIVMSG(Client &client, std::istringstream &iss);
