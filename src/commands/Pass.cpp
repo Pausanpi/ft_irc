@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 12:53:59 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/27 13:06:54 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/28 14:55:42 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,16 @@ void CommandHandler::handlePASS(Client &client, std::istringstream &iss, const s
 	std::string pass;
 	iss >> pass;
 
-	if (pass == password) {
-		client.setAutenticated(true);
+	if (pass.empty()) {
+		client.sendMessage("461 PASS :Not enough parameters\n");
+		return;
 	}
+
+	if (pass != password) {
+		client.sendMessage("464: Password incorrect\n");
+		return;
+	}
+	
+	client.setAutenticated(true);
+	client.sendMessage("001: Welcome to the server!\n");
 }
