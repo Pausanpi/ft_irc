@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/20 16:13:05 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/29 11:43:21 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss) {
             if (members.find(&client) == members.end()) {
                 // Client is NOT in the channel, reject sending message
                 // Optionally send an error message back to client:
-                client.sendMessage("404 " + client.getNickname() + " " + target + " :Cannot send to channel (not a member)\r\n");
+                client.sendMessage(":irc 404 " + client.getNickname() + " " + target + " :Cannot send to channel (not a member)\r\n");
                 return;
             }
 
@@ -61,7 +61,7 @@ void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss) {
             }
         } else {
             // Channel not found: optionally handle error
-            client.sendMessage("403 " + client.getNickname() + " " + target + " :No such channel\r\n");
+            client.sendMessage(":irc 403 " + client.getNickname() + " " + target + " :No such channel\r\n");
         }
     } else {
         // Message to user

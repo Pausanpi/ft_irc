@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/27 13:15:30 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/29 11:36:06 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,5 +178,6 @@ void Server::handleInput(Client &client, const std::string &input) {
 	else if (client.getAuthenticated() == false)
 	{
 		std::cout << "Client not authenticated. Command ignored: " << command << std::endl;
+		client.sendMessage("Please enter the password with PASS <password>\r\n");
 	}
 }

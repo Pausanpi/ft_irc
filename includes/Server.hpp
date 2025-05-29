@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:46:39 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/27 13:01:38 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/05/29 11:16:18 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@
 
 #define MAX_CLIENTS 10
 #define BUFFER_SIZE 1024
-#define PORT 6667
 
 extern std::map<std::string, Channel> _channels;
 
