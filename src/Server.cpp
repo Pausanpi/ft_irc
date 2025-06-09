@@ -24,7 +24,11 @@ Server::Server(int port, const std::string &password) : _port(port), _password(p
 	initSocket();
 }
 
-Server::~Server() {
+Server::~Server() { //recomienda cerrar los clientes tambien
+    for (int i = 0; i < MAX_CLIENTS; ++i)
+        if (_clients[i].getFd() > 0)
+            close(_clients[i].getFd());
+
     close(_serverFd);
 }
 
@@ -177,18 +181,52 @@ void Server::acceptNewClient() {
     close(client_fd);
 }
 
+//modificada para el tema del vuffer
 void Server::handleClientData(int index) {
     char buffer[BUFFER_SIZE];
     int fd = _clients[index].getFd();
+
+    // Read data from client socket
     int bytes = recv(fd, buffer, BUFFER_SIZE - 1, 0);
+
     if (bytes <= 0) {
+        // Client disconnected or error
         std::cout << "Client disconnected (fd " << fd << ")\n";
         removeClient(index);
     } else {
+        // Null-terminate received data
         buffer[bytes] = '\0';
-        handleInput(_clients[index], buffer);
+
+        // Append received data to client's buffer
+        Client& client = _clients[index];
+        client.getRecvBuffer().append(buffer);
+
+        std::string::size_type pos;
+
+        // Process all complete lines in the buffer
+        while ((pos = client.getRecvBuffer().find('\n')) != std::string::npos) {
+
+            // Extract one line (up to \n)
+            std::string line = client.getRecvBuffer().substr(0, pos);
+
+            // Remove line from buffer (including \n)
+            client.getRecvBuffer().erase(0, pos + 1);
+
+            // If the line ends with \r (proper IRC line), remove it
+            if (!line.empty() && line[line.size() - 1] == '\r') {
+                line.erase(line.size() - 1);
+            }
+
+            // Debug print (optional)
+            std::cout << "Received line: [" << line << "]\n";
+
+            // Process the complete line
+            handleInput(client, line);
+        }
     }
 }
+
+
 
 void Server::removeClient(int index) {
     _clients[index].clear();
@@ -204,7 +242,8 @@ void Server::handleInput(Client &client, const std::string &input) {
 	if (command == "PASS") {
 		handler.handlePASS(client, iss, _password);
 	}
-	
+	//internet sugiere  cambiar la logica pero si funciona no lo toques
+	//si que sugiere el tema de las mayusculas (un upper) para normalizar
 	if (client.getAuthenticated() == true && command != "PASS") {
 		if (command == "NICK") {
 			handler.handleNICK(client, iss);

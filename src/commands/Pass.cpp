@@ -17,15 +17,16 @@ void CommandHandler::handlePASS(Client &client, std::istringstream &iss, const s
 	iss >> pass;
 
 	if (pass.empty()) {
-		client.sendMessage(":irc 461 PASS :Not enough parameters\n");
+		client.sendMessage(":irc 461 PASS :Not enough parameters\r\n");
 		return;
 	}
 
+	//deberia llevar PASS y llos /r?
 	if (pass != password) {
-		client.sendMessage(":irc 464: Password incorrect\n");
+		client.sendMessage(":irc 464 PASS: Password incorrect\r\n");
 		return;
 	}
 	
 	client.setAutenticated(true);
-	client.sendMessage(":irc 001: Welcome to the server!\n");
+	client.sendMessage(":irc 001: Welcome to the server!\r\n");
 }
