@@ -39,6 +39,10 @@ public:
 
 	bool getAuthenticated() const;
 	void setAutenticated(bool authenticated);
+
+	//las funciones para el ctrl+d
+	std::string& getRecvBuffer();
+	void clearRecvBuffer();
 	
 
 private:
@@ -47,6 +51,7 @@ private:
     std::string _username;
     bool _registered;
 	bool _authenticated;
+	std::string _recvBuffer; //el buffer para el ctrd+D
 };
 
 #endif

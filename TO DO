@@ -1,3 +1,52 @@
+Recomendación de cerrar los clietnes tambien en el destructor
+
+en el send, chekiar errores
+
+me insisten mucho ne iniciar los fds a -1 o alguna wea así, no me entero bien. Es para luego para el accept y el handler y el clear
+
+broadcast puede ser vulnerable a punteros nulos
+Pointer-based sets (Client*)	⚠️	Ensure cleanup from all sets when client disconnects
+
+en el chanel la flag the invite only debería iniciarse.
+
+me avisa tambien de lo del buffer y los mensajes completos
+
+To avoid "dangling" pointers in Channel sets (_members, _operators, _invited), you must make sure to:
+→ Remove this client from all channels when removeClient() is called.
+recomienda esto: a saber que es verdad
+for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+    it->second.removeMember(&_clients[index]);
+    it->second.removeOperator(&_clients[index]);
+    it->second.removeInvited(&_clients[index]);
+}
+_clients[index].clear();
+
+em el handler se sufiere normalizarlo todo a mayusculas (un upper b'asicamente)
+
+
+PARA EL CONTROL D
+-Add a std::string _recvBuffer; to Client class.
+-When you recv(), append data to Client::_recvBuffer.
+-Whenever a full line (\r\n) is found, extract it and call handleInput() on that line.
+-Keep any incomplete data in _recvBuffer for next time.
+(a;adir limpieza del buffer al disconect)
+
+
+el diabloso \r\n al final de los mensajes me esta jodiendo la vida
+como est'a ahora parece que se queda lal inea sin borrar
+se puede poner un modo estricot para hexchat:
+bool strictMode = false; // or true if testing with HexChat only
+if (strictMode) {
+    // Only look for \r\n exactly
+} else {
+    // Accept \n and strip \r if present
+}
+
+declaracion de server dentro de comandhandler
+-en el PASS el PASS en el mensaje y el \r
+-en el NICK dice que el break esta mal la logica uqe se setea igualmetne aunque se repita.
+******************************************************************************
+
 El destructor mirarlo bien :)
 
 Try/catch en el main para que los errores sean throw(run time error)

@@ -62,5 +62,21 @@ void Client::clear() {
 }
 
 void Client::sendMessage(const std::string& msg) const {
-    send(_fd, msg.c_str(), msg.length(), 0);
+	send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL);
+}
+
+/* //con comprabsion de errores
+void Client::sendMessage(const std::string& msg) const {
+    if (send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL) < 0) {
+        perror("send");
+    }
+} */
+
+//el par de funciones para el buffer de ctrl+d
+std::string& Client::getRecvBuffer() {
+	return _recvBuffer;
+}
+
+void Client::clearRecvBuffer() { //a;adir ek ckear dek buffer al disconect
+	_recvBuffer.clear();
 }
