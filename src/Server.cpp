@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/09 16:18:08 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:26:29 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,50 +151,6 @@ void Server::handleClientData(int index) {
         handleInput(_clients[index], buffer);
     }
 }
-
-/* void Server::handleClientData(int index) {
-    char buffer[BUFFER_SIZE];
-    int fd = _clients[index].getFd();
-
-    // Read data from client socket
-    int bytes = recv(fd, buffer, BUFFER_SIZE - 1, 0);
-
-    if (bytes <= 0) {
-        // Client disconnected or error
-        std::cout << "Client disconnected (fd " << fd << ")\n";
-        removeClient(index);
-    } else {
-        // Null-terminate received data
-        buffer[bytes] = '\0';
-
-        // Append received data to client's buffer
-        Client& client = _clients[index];
-        client.getRecvBuffer().append(buffer);
-
-        std::string::size_type pos;
-
-        // Process all complete lines in the buffer
-        while ((pos = client.getRecvBuffer().find('\n')) != std::string::npos) {
-
-            // Extract one line (up to \n)
-            std::string line = client.getRecvBuffer().substr(0, pos);
-
-            // Remove line from buffer (including \n)
-            client.getRecvBuffer().erase(0, pos + 1);
-
-            // If the line ends with \r (proper IRC line), remove it
-            if (!line.empty() && line[line.size() - 1] == '\r') {
-                line.erase(line.size() - 1);
-            }
-
-            // Debug print (optional)
-            std::cout << "Received line: [" << line << "]\n";
-
-            // Process the complete line
-            handleInput(client, line);
-        }
-    }
-} */
 
 void Server::removeClient(int index) {
     _clients[index].clear();
