@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:40:17 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/27 13:11:24 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:12:06 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,13 @@ void Client::clear() {
 }
 
 void Client::sendMessage(const std::string& msg) const {
-    send(_fd, msg.c_str(), msg.length(), 0);
+    send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL);
+}
+
+std::string& Client::getRecvBuffer() {
+	return _recvBuffer;
+}
+
+void Client::clearRecvBuffer() { //a;adir ek ckear dek buffer al disconect
+	_recvBuffer.clear();
 }

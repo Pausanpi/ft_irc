@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/09 14:03:51 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/09 16:18:08 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,44 +64,6 @@ void Server::initSocket() {
 
     std::cout << "Server listening on port " << _port << "..." << std::endl;
 }
-
-// Bucle principal del servidor
-// Se encarga de usar select() para detectar eventos en los sockets, aceptar nuevos clientes
-// y leer datos de los clientes existentes.
-/* void Server::run() {
-    fd_set read_fds;
-    int max_fd;
-
-    while (true) {
-        FD_ZERO(&read_fds);
-        FD_SET(_serverFd, &read_fds);
-        max_fd = _serverFd;
-
-        for (int i = 0; i < MAX_CLIENTS; ++i) {
-            int fd = _clients[i].getFd();
-            if (fd > 0) {
-                FD_SET(fd, &read_fds);
-                if (fd > max_fd)
-                    max_fd = fd;
-            }
-        }
-
-        if (select(max_fd + 1, &read_fds, NULL, NULL, NULL) < 0) {
-            perror("select");
-            continue;
-        }
-
-        if (FD_ISSET(_serverFd, &read_fds))
-            acceptNewClient();
-
-        for (int i = 0; i < MAX_CLIENTS; ++i) {
-            int fd = _clients[i].getFd();
-            if (fd > 0 && FD_ISSET(fd, &read_fds)) {
-                handleClientData(i);
-            }
-        }
-    }
-} */
 
 void signalHandler(int signum) {
 	std::cout << "\nSignal " << signum << " received. Shutting down server." << std::endl;
@@ -190,27 +152,70 @@ void Server::handleClientData(int index) {
     }
 }
 
+/* void Server::handleClientData(int index) {
+    char buffer[BUFFER_SIZE];
+    int fd = _clients[index].getFd();
+
+    // Read data from client socket
+    int bytes = recv(fd, buffer, BUFFER_SIZE - 1, 0);
+
+    if (bytes <= 0) {
+        // Client disconnected or error
+        std::cout << "Client disconnected (fd " << fd << ")\n";
+        removeClient(index);
+    } else {
+        // Null-terminate received data
+        buffer[bytes] = '\0';
+
+        // Append received data to client's buffer
+        Client& client = _clients[index];
+        client.getRecvBuffer().append(buffer);
+
+        std::string::size_type pos;
+
+        // Process all complete lines in the buffer
+        while ((pos = client.getRecvBuffer().find('\n')) != std::string::npos) {
+
+            // Extract one line (up to \n)
+            std::string line = client.getRecvBuffer().substr(0, pos);
+
+            // Remove line from buffer (including \n)
+            client.getRecvBuffer().erase(0, pos + 1);
+
+            // If the line ends with \r (proper IRC line), remove it
+            if (!line.empty() && line[line.size() - 1] == '\r') {
+                line.erase(line.size() - 1);
+            }
+
+            // Debug print (optional)
+            std::cout << "Received line: [" << line << "]\n";
+
+            // Process the complete line
+            handleInput(client, line);
+        }
+    }
+} */
+
 void Server::removeClient(int index) {
     _clients[index].clear();
 }
 
-void Server::handleInput(Client &client, const std::string &input) {
+/* void Server::handleInput(Client &client, const std::string &input) {
     std::istringstream iss(input);
     std::string command;
     iss >> command;
 
     CommandHandler handler(_clients, _channels);
 
-	if (command == "PASS") {
+	if (command == "PASS")
 		handler.handlePASS(client, iss, _password);
-	}
 	
 	if (client.getAuthenticated() == true && command != "PASS") {
 		if (command == "NICK") {
 			handler.handleNICK(client, iss);
 		} else if (command == "USER") {
 			handler.handleUSER(client, iss);
-		} else if (command == "PRIVMSG") {
+		}else if (command == "PRIVMSG") {
 			handler.handlePRIVMSG(client, iss);
 		} else if (command == "JOIN") {
 			handler.handleJOIN(client, iss);
@@ -231,4 +236,57 @@ void Server::handleInput(Client &client, const std::string &input) {
 		std::cout << "Client not authenticated. Command ignored: " << command << std::endl;
 		client.sendMessage("Please enter the password with PASS <password>\r\n");
 	}
+} */
+
+void Server::handleInput(Client &client, const std::string &input) {
+    CommandHandler handler(_clients, _channels);
+
+    std::string buffer = input;
+    size_t pos = 0;
+
+    // Procesa cada línea (comando) separada por \r\n o \n
+    while ((pos = buffer.find('\n')) != std::string::npos) {
+        std::string line = buffer.substr(0, pos);
+        buffer.erase(0, pos + 1);
+
+        // Elimina \r final si existe
+        if (!line.empty() && line[line.size() - 1] == '\r')
+            line.erase(line.size() - 1);
+
+        if (line.empty())
+            continue;
+
+        std::istringstream iss(line);
+        std::string command;
+        std::cout << "TEST: " << line << std::endl;
+        iss >> command;
+
+        if (command == "PASS")
+            handler.handlePASS(client, iss, _password);
+        if (command == "NICK") 
+            handler.handleNICK(client, iss);
+        if (command == "USER")
+            handler.handleUSER(client, iss);
+
+        if (client.getAuthenticated() == true && command != "PASS") {
+            if (command == "PRIVMSG") {
+                handler.handlePRIVMSG(client, iss);
+            } else if (command == "JOIN") {
+                handler.handleJOIN(client, iss);
+            } else if (command == "QUIT") {
+                handler.handleQUIT(client, iss);
+            } else if (command == "MODE") {
+                handler.handleMODE(client, iss);
+            } else if (command == "KICK") {
+                handler.handleKICK(client, iss);
+            } else if (command == "INVITE") {
+                handler.handleINVITE(client, iss);
+            } else {
+                std::cout << "Unknown command: " << command << std::endl;
+            }
+        } else if (client.getAuthenticated() == false && command != "PASS") {
+            std::cout << "Client not authenticated. Command ignored: " << command << std::endl;
+            client.sendMessage("Please enter the password with PASS <password>\r\n");
+        }
+    }
 }
