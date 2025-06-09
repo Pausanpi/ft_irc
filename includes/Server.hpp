@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:46:39 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/29 11:16:18 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/02 15:44:34 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <string>
 #include <cstdlib>
 #include <cstdio>
+#include <csignal>
 #include <iostream>
 #include <sstream>
 #include <cstring>

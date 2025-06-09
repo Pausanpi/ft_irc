@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/29 11:36:06 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/09 14:03:51 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 #include "../includes/CommandHandler.hpp"
 std::map<std::string, Channel> _channels;
 
-Server::Server() {
+static Server *g_signal = NULL;
+
+Server::Server(){
     initSocket();
 }
 
@@ -63,11 +65,10 @@ void Server::initSocket() {
     std::cout << "Server listening on port " << _port << "..." << std::endl;
 }
 
-
 // Bucle principal del servidor
 // Se encarga de usar select() para detectar eventos en los sockets, aceptar nuevos clientes
 // y leer datos de los clientes existentes.
-void Server::run() {
+/* void Server::run() {
     fd_set read_fds;
     int max_fd;
 
@@ -100,6 +101,56 @@ void Server::run() {
             }
         }
     }
+} */
+
+void signalHandler(int signum) {
+	std::cout << "\nSignal " << signum << " received. Shutting down server." << std::endl;
+	throw std::runtime_error("Server shutdown requested");
+}
+
+void Server::run() {
+	
+    g_signal = this;
+
+	std::signal(SIGINT, signalHandler);
+	std::signal(SIGTERM, signalHandler);
+
+	try {
+		fd_set read_fds;
+    	int max_fd;
+		while (true) {
+			FD_ZERO(&read_fds);
+			FD_SET(_serverFd, &read_fds);
+			max_fd = _serverFd;
+
+			for (int i = 0; i < MAX_CLIENTS; ++i) {
+				int fd = _clients[i].getFd();
+				if (fd > 0) {
+					FD_SET(fd, &read_fds);
+					if (fd > max_fd)
+						max_fd = fd;
+				}
+			}
+
+			if (select(max_fd + 1, &read_fds, NULL, NULL, NULL) < 0) {
+				perror("select");
+				continue;
+			}
+
+			if (FD_ISSET(_serverFd, &read_fds))
+				acceptNewClient();
+
+			for (int i = 0; i < MAX_CLIENTS; ++i) {
+				int fd = _clients[i].getFd();
+				if (fd > 0 && FD_ISSET(fd, &read_fds)) {
+					handleClientData(i);
+				}
+			}
+		}
+	} catch (const std::exception &e) {
+		std::cout << "Server shutting down: " << e.what() << std::endl;
+	}
+	g_signal = NULL;
 }
 
 void Server::acceptNewClient() {
