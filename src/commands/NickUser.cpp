@@ -21,11 +21,11 @@ void CommandHandler::handleNICK(Client &client, std::istringstream &iss) {
 		return;
 	}
 	for (int i = 0; i < MAX_CLIENTS; ++i) {
-	if (_clients[i].getFd() > 0 && _clients[i].getNickname() == nick) {
-		client.sendMessage(":irc 433 NICK :Nickname is already in use\r\n");
-		break;
+		if (_clients[i].getFd() > 0 && _clients[i].getNickname() == nick) {
+			client.sendMessage(":irc 433 NICK :Nickname is already in use\r\n");
+			return; //tendr'ia que ser un return?
+		}
 	}
-}
 	
     client.setNickname(nick);
 }

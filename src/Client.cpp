@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:40:17 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/09 16:12:06 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/10 12:31:32 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,9 +62,17 @@ void Client::clear() {
 }
 
 void Client::sendMessage(const std::string& msg) const {
-    send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL);
+	send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL);
 }
 
+/* //con comprabsion de errores
+void Client::sendMessage(const std::string& msg) const {
+    if (send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL) < 0) {
+        perror("send");
+    }
+} */
+
+//el par de funciones para el buffer de ctrl+d
 std::string& Client::getRecvBuffer() {
 	return _recvBuffer;
 }
