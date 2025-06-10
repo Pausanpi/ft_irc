@@ -14,6 +14,8 @@
 #include "../includes/CommandHandler.hpp"
 std::map<std::string, Channel> _channels;
 
+static Server *g_signal = NULL;
+
 Server::Server() {
     initSocket();
 }
@@ -67,43 +69,57 @@ void Server::initSocket() {
     std::cout << "Server listening on port " << _port << "..." << std::endl;
 }
 
+void	signalHandler(int signum) {
+	std::cout << "\nSignal " << signum << " received. Shutting down server." << std::endl;
+	throw std::runtime_error("Server shutdown requested");
+}
 
 // Bucle principal del servidor
 // Se encarga de usar select() para detectar eventos en los sockets, aceptar nuevos clientes
 // y leer datos de los clientes existentes.
 void Server::run() {
-    fd_set read_fds;
-    int max_fd;
+	
+    g_signal = this;
 
-    while (true) {
-        FD_ZERO(&read_fds);
-        FD_SET(_serverFd, &read_fds);
-        max_fd = _serverFd;
+	std::signal(SIGINT, signalHandler);
+	std::signal(SIGTERM, signalHandler);
 
-        for (int i = 0; i < MAX_CLIENTS; ++i) {
-            int fd = _clients[i].getFd();
-            if (fd > 0) {
-                FD_SET(fd, &read_fds);
-                if (fd > max_fd)
-                    max_fd = fd;
-            }
-        }
+	try {
+		fd_set read_fds;
+    	int max_fd;
+		while (true) {
+			FD_ZERO(&read_fds);
+			FD_SET(_serverFd, &read_fds);
+			max_fd = _serverFd;
 
-        if (select(max_fd + 1, &read_fds, NULL, NULL, NULL) < 0) {
-            perror("select");
-            continue;
-        }
+			for (int i = 0; i < MAX_CLIENTS; ++i) {
+				int fd = _clients[i].getFd();
+				if (fd > 0) {
+					FD_SET(fd, &read_fds);
+					if (fd > max_fd)
+						max_fd = fd;
+				}
+			}
 
-        if (FD_ISSET(_serverFd, &read_fds))
-            acceptNewClient();
+			if (select(max_fd + 1, &read_fds, NULL, NULL, NULL) < 0) {
+				perror("select");
+				continue;
+			}
 
-        for (int i = 0; i < MAX_CLIENTS; ++i) {
-            int fd = _clients[i].getFd();
-            if (fd > 0 && FD_ISSET(fd, &read_fds)) {
-                handleClientData(i);
-            }
-        }
-    }
+			if (FD_ISSET(_serverFd, &read_fds))
+				acceptNewClient();
+
+			for (int i = 0; i < MAX_CLIENTS; ++i) {
+				int fd = _clients[i].getFd();
+				if (fd > 0 && FD_ISSET(fd, &read_fds)) {
+					handleClientData(i);
+				}
+			}
+		}
+	} catch (const std::exception &e) {
+		std::cout << "Server shutting down: " << e.what() << std::endl;
+	}
+	g_signal = NULL;
 }
 
 void Server::acceptNewClient() {
@@ -130,7 +146,7 @@ void Server::acceptNewClient() {
     close(client_fd);
 }
 
-//modificada para el tema del vuffer
+//modificada para el tema del vhufferr
 void Server::handleClientData(int index) {
     char buffer[BUFFER_SIZE];
     int fd = _clients[index].getFd();
