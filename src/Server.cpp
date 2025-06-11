@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/10 12:32:04 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/10 12:32:46 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,7 +194,7 @@ void Server::removeClient(int index) {
     _clients[index].clear();
 }
 
-/* void Server::handleInput(Client &client, const std::string &input) {
+void Server::handleInput(Client &client, const std::string &input) {
     std::istringstream iss(input);
     std::string command;
     iss >> command;
@@ -203,9 +203,7 @@ void Server::removeClient(int index) {
 
 	if (command == "PASS")
 		handler.handlePASS(client, iss, _password);
-	}
-	//internet sugiere  cambiar la logica pero si funciona no lo toques
-	//si que sugiere el tema de las mayusculas (un upper) para normalizar
+	
 	if (client.getAuthenticated() == true && command != "PASS") {
 		if (command == "NICK") {
 			handler.handleNICK(client, iss);
@@ -232,9 +230,9 @@ void Server::removeClient(int index) {
 		std::cout << "Client not authenticated. Command ignored: " << command << std::endl;
 		client.sendMessage("Please enter the password with PASS <password>\r\n");
 	}
-} */
+}
 
-void Server::handleInput(Client &client, const std::string &input) {
+/* void Server::handleInput(Client &client, const std::string &input) {
     CommandHandler handler(_clients, _channels);
 
     std::string buffer = input;
@@ -286,3 +284,4 @@ void Server::handleInput(Client &client, const std::string &input) {
         }
     }
 }
+ */

@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:35:05 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/21 12:21:11 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/11 15:23:40 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,20 @@ void Channel::removeMode(char mode) {
 
 bool Channel::hasMode(char mode) const {
 	return _modes.find(mode) != std::string::npos;
+}
+
+void Channel::setKey(const std::string& key) {
+	_key = key;
+}
+
+void Channel::removeKey() {
+	_key.clear();
+}
+
+const std::string& Channel::getKey() const {
+	return _key;
+}
+
+bool Channel::hasKey() const {
+	return !_key.empty();
 }
