@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:39:46 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/10 12:31:51 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:09:15 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ public:
 
 	bool getAuthenticated() const;
 	void setAutenticated(bool authenticated);
+	void setNickOK();
+	void setUserOK();
 	
 	std::string& getRecvBuffer();
 	void clearRecvBuffer();
@@ -49,6 +51,8 @@ private:
     std::string _username;
     bool _registered;
 	bool _authenticated;
+	bool _nickOK;
+	bool _userOK;
 	std::string _recvBuffer;
 };
 
