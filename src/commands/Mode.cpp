@@ -67,4 +67,20 @@ void CommandHandler::handleMODE(Client &client, std::istringstream &iss) {
 		channel.removeKey();
 		channel.broadcast(":" + client.getNickname() + " MODE " + target + " -k\r\n");
 	}
+
+	if (mode == "+l"){
+		int limit;
+		std::istringstream lim(extra);
+		if (lim >> limit && lim.eof()) {
+			channel.setlimit(limit); //habrái que comprobar errroes si no es numero
+			channel.broadcast(":" + client.getNickname() + " MODE " + target + " +l " + extra + "\r\n");
+		}
+		else {
+			channel.broadcast(": usa un puto int \r\n");
+		}
+	}
+	else if (mode == "-l"){
+		channel.removelimit();
+		channel.broadcast(":" + client.getNickname() + " MODE " + target + " -l\r\n");
+	}
 }

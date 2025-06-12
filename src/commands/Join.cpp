@@ -58,6 +58,11 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss) {
 				return;
 			}
 		}
+
+		if (channel.getlimit() >= channel.getnumberofmembers()) {
+				client.sendMessage(":irc 471 " + client.getNickname() + " " + chanName + " :Cannot join channel (+l)\r\n");
+				return;
+		}
     }
 
     // --- Unir al cliente ---
