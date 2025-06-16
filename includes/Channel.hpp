@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:34:15 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/21 12:21:01 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/11 15:24:48 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ private:
 	std::set<Client*> _invited;
 	bool _inviteOnly;
 	std::string _modes;
+	std::string _key;
+	int	_limitmember;
 
 public:
 	Channel();
@@ -50,6 +52,17 @@ public:
 	void addMode(char mode);
 	void removeMode(char mode);
 	bool hasMode(char mode) const;
+
+	void setKey(const std::string& key);
+	void removeKey();
+	const std::string& getKey() const;
+	bool hasKey() const;
+
+	void setlimit(int limit);
+	int getlimit();
+	void removelimit();
+	int getnumberofmembers();
+	
 };
 
 #endif

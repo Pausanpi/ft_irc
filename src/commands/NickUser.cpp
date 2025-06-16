@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/29 11:42:28 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:14:09 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,14 @@ void CommandHandler::handleNICK(Client &client, std::istringstream &iss) {
 			return; //tendr'ia que ser un return?
 		}
 	}
-	
     client.setNickname(nick);
+	client.setNickOK();
+	if (client.isRegistered()) {
+		std::ostringstream oss;
+		oss << ":irc 001 " << client.getNickname()
+		<< " :Welcome to ft_irc, " << client.getNickname() << "!\r\n";
+		client.sendMessage(oss.str());
+	}
 }
 
 void CommandHandler::handleUSER(Client &client, std::istringstream &iss) {
@@ -43,8 +49,11 @@ void CommandHandler::handleUSER(Client &client, std::istringstream &iss) {
     client.setUsername(user);
     client.registerUser();
 
-    std::ostringstream oss;
-    oss << ":irc 001 " << client.getNickname()
-        << " :Welcome to ft_irc, " << client.getNickname() << "!\r\n";
-    client.sendMessage(oss.str());
+	client.setUserOK();
+	if (client.isRegistered()) {
+		std::ostringstream oss;
+		oss << ":irc 001 " << client.getNickname()
+		<< " :Welcome to ft_irc, " << client.getNickname() << "!\r\n";
+		client.sendMessage(oss.str());
+	}
 }

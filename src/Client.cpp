@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:40:17 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/27 13:11:24 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/11 16:09:08 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,27 @@ const std::string& Client::getUsername() const {
     return _username;
 }
 
+bool Client::isRegistered() const {
+	if (_nickOK && _userOK) {
+		return true;
+	}
+	return false;
+}
+
 bool Client::getAuthenticated() const {
 	return _authenticated;
 }
 
 void Client::setAutenticated(bool authenticated) {
 	_authenticated = authenticated;
+}
+
+void Client::setNickOK() {
+	_nickOK = true;
+}
+
+void Client::setUserOK() {
+	_userOK = true;
 }
 
 void Client::registerUser() {

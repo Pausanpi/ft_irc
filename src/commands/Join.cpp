@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/21 12:26:25 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/11 15:29:33 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss) {
     Channel& channel = _channels[chanName];
 
     // --- Verificaciones para canales existentes ---
-    if (!isNewChannel) {
+    if (!isNewChannel) {		
         // 1. ¿El canal es +i y el cliente NO está invitado?
         if (channel.hasMode('i') && !channel.isInvited(&client)) {
             client.sendMessage(":irc 473 " + client.getNickname() + " " + chanName + " :Cannot join channel (+i)\r\n");
@@ -48,6 +48,21 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss) {
             client.sendMessage(":irc 443 " + client.getNickname() + " " + chanName + " :is already on channel\r\n");
             return;
         }
+
+		// 3. ¿El canal es +k y el cliente NO tiene la clave correcta?
+		if (channel.hasKey()) {
+			std::string key;
+			iss >> key;
+			if (key.empty() || key != channel.getKey()) {
+				client.sendMessage(":irc 475 " + client.getNickname() + " " + chanName + " :Cannot join channel (+k)\r\n");
+				return;
+			}
+		}
+
+		if (channel.getlimit() != 0 && channel.getlimit() <= channel.getnumberofmembers()) {
+				client.sendMessage(":irc 471 " + client.getNickname() + " " + chanName + " :Cannot join channel (+l)\r\n");
+				return;
+		}
     }
 
     // --- Unir al cliente ---

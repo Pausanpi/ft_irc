@@ -49,6 +49,7 @@ public:
 	void handleClientData(int index);
 	void removeClient(int index);
 	void handleInput(Client &client, const std::string &input);
+
 	
 private:
 	int _port;
