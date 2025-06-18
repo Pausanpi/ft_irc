@@ -251,7 +251,6 @@ void Server::handleInput(Client &client, const std::string &input)
 	else if (command != "PASS" && command != "NICK" && command != "USER")
 	{
 		std::cout << "Unknown command from registered user: " << command << std::endl;
-		// client.sendMessage("421 " + \r\n");
 		client.sendReply("421", (client.getNickname().empty() ? "*" : client.getNickname()) + " " + command + " :Unknown command");
 	}
 }
