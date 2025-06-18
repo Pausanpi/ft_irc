@@ -12,70 +12,76 @@
 
 #include "../../includes/CommandHandler.hpp"
 
-void CommandHandler::handleKICK(Client &client, std::istringstream &iss) {
+void CommandHandler::handleKICK(Client &client, std::istringstream &iss)
+{
     std::string channelName, targetNick, reason;
-    
-    // 1. Leer parámetros obligatorios
-    if (!(iss >> channelName >> targetNick)) {
-        client.sendMessage(":irc 461 " + client.getNickname() + " KICK :Not enough parameters\r\n");
+
+    if (!(iss >> channelName >> targetNick))
+    {
+        client.sendReply("461", client.getNickname() + " KICK :Not enough parameters");
         return;
     }
 
-    // 2. Leer razón (manejo seguro)
     std::getline(iss, reason);
-    if (!reason.empty()) {
+    if (!reason.empty())
+    {
         size_t start = reason.find_first_not_of(' ');
-        if (start != std::string::npos) {
+        if (start != std::string::npos)
+        {
             reason = reason.substr(start);
-            if (!reason.empty() && reason[0] == ':') {
+            if (!reason.empty() && reason[0] == ':')
+            {
                 reason = reason.substr(1);
             }
-        } else {
+        }
+        else
+        {
             reason.clear();
         }
     }
 
-    // 3. Validar canal
     std::map<std::string, Channel>::iterator it = _channels.find(channelName);
-    if (it == _channels.end()) {
-        client.sendMessage(":irc 403 " + client.getNickname() + " " + channelName + " :No such channel\r\n");
+    if (it == _channels.end())
+    {
+        client.sendReply("403", client.getNickname() + " " + channelName + " :No such channel");
         return;
     }
     Channel &channel = it->second;
 
-    // 4. Validar operador
-    if (!channel.isOperator(&client)) {
-        client.sendMessage(":irc 482 " + client.getNickname() + " " + channelName + " :You're not a channel operator\r\n");
+    if (!channel.isOperator(&client))
+    {
+        client.sendReply("482", client.getNickname() + " " + channelName + " :You're not a channel operator");
         return;
     }
 
-    // 5. Buscar target
     Client *targetClient = NULL;
-    for (int i = 0; i < MAX_CLIENTS; ++i) {
-        if (_clients[i].getFd() > 0 && _clients[i].getNickname() == targetNick) {
-            if (channel.getMembers().count(&_clients[i])) {
+    for (int i = 0; i < MAX_CLIENTS; ++i)
+    {
+        if (_clients[i].getFd() > 0 && _clients[i].getNickname() == targetNick)
+        {
+            if (channel.getMembers().count(&_clients[i]))
+            {
                 targetClient = &_clients[i];
                 break;
             }
         }
     }
 
-    if (!targetClient) {
-        client.sendMessage(":irc 441 " + client.getNickname() + " " + targetNick + " " + channelName + " :They aren't on that channel\r\n");
+    if (!targetClient)
+    {
+        client.sendReply("441", client.getNickname() + " " + targetNick + " " + channelName + " :They aren't on that channel");
         return;
     }
 
-    // 6. Ejecutar KICK
     std::string kickMsg = ":" + client.getNickname() + " KICK " + channelName + " " + targetNick;
-    if (!reason.empty()) {
+    if (!reason.empty())
+    {
         kickMsg += " :" + reason;
     }
     kickMsg += "\r\n";
-
     channel.broadcast(kickMsg);
     channel.removeMember(targetClient);
     channel.removeOperator(targetClient);
 
-    // Mensaje directo al expulsado
     targetClient->sendMessage(":" + client.getNickname() + " KICK " + channelName + " :" + (reason.empty() ? "Kicked" : reason) + "\r\n");
 }

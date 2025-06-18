@@ -47,7 +47,7 @@ public:
 	void initSocket();
 	void acceptNewClient();
 	void handleClientData(int index);
-	void removeClient(int index);
+	void removeClient(int index, int fd);
 	void handleInput(Client &client, const std::string &input);
 
 	

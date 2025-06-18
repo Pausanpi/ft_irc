@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsalado- <jsalado-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:40:17 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/11 16:09:08 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:04:01 by jsalado-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,7 @@ const std::string& Client::getUsername() const {
 }
 
 bool Client::isRegistered() const {
-	if (_nickOK && _userOK) {
-		return true;
-	}
-	return false;
+	return _nickOK && _userOK;
 }
 
 bool Client::getAuthenticated() const {
@@ -80,18 +77,17 @@ void Client::sendMessage(const std::string& msg) const {
 	send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL);
 }
 
-/* //con comprabsion de errores
-void Client::sendMessage(const std::string& msg) const {
-    if (send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL) < 0) {
-        perror("send");
-    }
-} */
+void Client::sendReply(const std::string& code, const std::string& message)
+{
+    std::string nickname = _nickname.empty() ? "*" : _nickname;
+    std::string reply = ":irc " + code + " " + nickname + " " + message + "\r\n";
+    sendMessage(reply);
+}
 
-//el par de funciones para el buffer de ctrl+d
 std::string& Client::getRecvBuffer() {
 	return _recvBuffer;
 }
 
-void Client::clearRecvBuffer() { //a;adir ek ckear dek buffer al disconect
+void Client::clearRecvBuffer() {
 	_recvBuffer.clear();
 }

@@ -3,32 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   Privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsalado- <jsalado-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/29 11:43:21 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:04:40 by jsalado-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/CommandHandler.hpp"
 
-void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss) {
+void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss)
+{
     std::string target;
     iss >> target;
 
     std::string msg;
     std::getline(iss, msg);
 
-    // Remove leading spaces
     size_t pos = msg.find_first_not_of(' ');
-    if (pos != std::string::npos) {
+    if (pos != std::string::npos)
+    {
         msg = msg.substr(pos);
-    } else {
-        msg.clear(); // no message content
+    }
+    else
+    {
+        msg.clear();
     }
 
-    // Remove leading ':' if present (common in IRC protocol)
-    if (!msg.empty() && msg[0] == ':') {
+    if (!msg.empty() && msg[0] == ':')
+    {
         msg = msg.substr(1);
     }
 
@@ -37,39 +40,49 @@ void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss) {
         << " PRIVMSG " << target << " :" << msg << "\r\n";
     std::string fullMsg = oss.str();
 
-    if (!target.empty() && target[0] == '#') {
-        // Message to channel
+    if (!target.empty() && target[0] == '#')
+    {
         std::map<std::string, Channel>::iterator it = _channels.find(target);
-        if (it != _channels.end()) {
+        if (it != _channels.end())
+        {
             Channel &channel = it->second;
             const std::set<Client *> &members = channel.getMembers();
 
-            // Check if sender is in the channel members
-            if (members.find(&client) == members.end()) {
-                // Client is NOT in the channel, reject sending message
-                // Optionally send an error message back to client:
-                client.sendMessage(":irc 404 " + client.getNickname() + " " + target + " :Cannot send to channel (not a member)\r\n");
+            if (members.find(&client) == members.end())
+            {
+                client.sendReply("404", client.getNickname() + " " + target + " :Cannot send to channel (not a member)\r\n");
                 return;
             }
 
-            // Client is in the channel, send the message to all other members
-            for (std::set<Client *>::const_iterator iter = members.begin(); iter != members.end(); ++iter) {
+            for (std::set<Client *>::const_iterator iter = members.begin(); iter != members.end(); ++iter)
+            {
                 Client *member = *iter;
-                if (member->getFd() != client.getFd()) {
+                if (member->getFd() != client.getFd())
+                {
                     member->sendMessage(fullMsg);
                 }
             }
-        } else {
-            // Channel not found: optionally handle error
-            client.sendMessage(":irc 403 " + client.getNickname() + " " + target + " :No such channel\r\n");
         }
-    } else {
-        // Message to user
-        for (int i = 0; i < MAX_CLIENTS; ++i) {
-            if (_clients[i].getFd() > 0 && _clients[i].getNickname() == target) {
+        else
+        {
+            client.sendReply("403", client.getNickname() + " " + target + " :No such channel\r\n");
+        }
+    }
+    else
+    {
+        bool found = false;
+        for (int i = 0; i < MAX_CLIENTS; ++i)
+        {
+            if (_clients[i].getFd() > 0 && _clients[i].getNickname() == target)
+            {
                 _clients[i].sendMessage(fullMsg);
+                found = true;
                 break;
             }
+        }
+        if (!found)
+        {
+            client.sendReply("401", client.getNickname() + " " + target + " :No such nick/channel\r\n");
         }
     }
 }

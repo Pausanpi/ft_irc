@@ -17,7 +17,6 @@ CommandHandler::CommandHandler(Client* clients, std::map<std::string, Channel>& 
 }
 
 CommandHandler::~CommandHandler() {
-    // No es necesario liberar nada aquí ya que no gestionamos memoria
 }
 
 Client* CommandHandler::findClientByNick(const std::string& nick) {
