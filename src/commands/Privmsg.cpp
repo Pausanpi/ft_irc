@@ -36,8 +36,8 @@ void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss)
     }
 
     std::ostringstream oss;
-    oss << ":" << client.getNickname()
-        << " PRIVMSG " << target << " :" << msg << "\r\n";
+    oss << ":" << client.getNickname() << "!" << client.getNickname()
+        << "@localhost" << " PRIVMSG " << target << " :" << msg << "\r\n";
     std::string fullMsg = oss.str();
 
     if (!target.empty() && target[0] == '#')
