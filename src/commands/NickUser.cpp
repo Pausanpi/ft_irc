@@ -30,8 +30,10 @@ void CommandHandler::handleNICK(Client &client, std::istringstream &iss)
 			return;
 		}
 	}
+
 	client.setNickname(nick);
 	client.setNickOK();
+	
 	if (client.isRegistered())
 	{
 		std::ostringstream oss;
@@ -54,9 +56,8 @@ void CommandHandler::handleUSER(Client &client, std::istringstream &iss)
 	}
 
 	client.setUsername(user);
-	client.registerUser();
-
 	client.setUserOK();
+
 	if (client.isRegistered())
 	{
 		std::ostringstream oss;
