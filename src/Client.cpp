@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jsalado- <jsalado-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:40:17 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/27 13:11:24 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:04:01 by jsalado-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,24 @@ const std::string& Client::getUsername() const {
     return _username;
 }
 
+bool Client::isRegistered() const {
+	return _nickOK && _userOK;
+}
+
 bool Client::getAuthenticated() const {
 	return _authenticated;
 }
 
 void Client::setAutenticated(bool authenticated) {
 	_authenticated = authenticated;
+}
+
+void Client::setNickOK() {
+	_nickOK = true;
+}
+
+void Client::setUserOK() {
+	_userOK = true;
 }
 
 void Client::registerUser() {
@@ -62,5 +74,20 @@ void Client::clear() {
 }
 
 void Client::sendMessage(const std::string& msg) const {
-    send(_fd, msg.c_str(), msg.length(), 0);
+	send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL);
+}
+
+void Client::sendReply(const std::string& code, const std::string& message)
+{
+    std::string nickname = _nickname.empty() ? "*" : _nickname;
+    std::string reply = ":irc " + code + " " + nickname + " " + message + "\r\n";
+    sendMessage(reply);
+}
+
+std::string& Client::getRecvBuffer() {
+	return _recvBuffer;
+}
+
+void Client::clearRecvBuffer() {
+	_recvBuffer.clear();
 }
