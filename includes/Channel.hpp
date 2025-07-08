@@ -28,6 +28,7 @@ private:
 	bool _inviteOnly;
 	std::string _modes;
 	std::string _key;
+	int	_limitmember;
 
 public:
 	Channel();
@@ -56,6 +57,11 @@ public:
 	void removeKey();
 	const std::string& getKey() const;
 	bool hasKey() const;
+
+	void setlimit(int limit);
+	int getlimit();
+	void removelimit();
+	int getnumberofmembers();
 	
 };
 

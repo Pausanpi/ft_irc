@@ -99,3 +99,19 @@ const std::string& Channel::getKey() const {
 bool Channel::hasKey() const {
 	return !_key.empty();
 }
+
+void Channel::setlimit(int limit) {
+	_limitmember = limit;
+}
+
+int Channel::getlimit() {
+	return(_limitmember);
+}
+
+void Channel::removelimit() {
+	_limitmember = 0;
+}
+
+int Channel::getnumberofmembers() {
+	return(_members.size());
+}

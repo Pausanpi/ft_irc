@@ -12,21 +12,24 @@
 
 #include "../../includes/CommandHandler.hpp"
 
-void CommandHandler::handlePASS(Client &client, std::istringstream &iss, const std::string &password) {
+void CommandHandler::handlePASS(Client &client, std::istringstream &iss, const std::string &password)
+{
 	std::string pass;
 	iss >> pass;
 
-	if (pass.empty()) {
-		client.sendMessage(":irc 461 PASS :Not enough parameters\r\n");
+	if (pass.empty())
+	{
+		client.sendReply("461", "PASS :Not enough parameters");
 		return;
 	}
 
-	//deberia llevar PASS y llos /r?
-	if (pass != password) {
-		client.sendMessage(":irc 464 PASS: Password incorrect\r\n");
+	if (pass != password)
+	{
+		client.sendReply("464", "PASS: Password incorrect");
 		return;
 	}
-	
+
 	client.setAutenticated(true);
+	// TODO: se supone que segun el protocolo IRC esto es erroneo
 	client.sendMessage(":irc : Correct Password!\r\n");
 }
