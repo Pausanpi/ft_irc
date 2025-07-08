@@ -12,26 +12,28 @@
 
 #include "../../includes/CommandHandler.hpp"
 
-void CommandHandler::handleINVITE(Client &inviter, std::istringstream &iss) {
-    std::string targetNick, channelName;
-    iss >> targetNick >> channelName;
+void CommandHandler::handleINVITE(Client &inviter, std::istringstream &iss)
+{
+	std::string targetNick, channelName;
+	iss >> targetNick >> channelName;
 
-    Channel &channel = _channels[channelName];
-    
-    // Verificaciones
-    if (!channel.isOperator(&inviter)) {
-        inviter.sendMessage(":irc 482 " + channelName + " :You're not a channel operator\r\n");
-        return;
-    }
+	Channel &channel = _channels[channelName];
 
-    Client* target = findClientByNick(targetNick); // Implementa esta función
-    if (!target) {
-        inviter.sendMessage(":irc 401 " + targetNick + " :No such nick\r\n");
-        return;
-    }
+	// Verificaciones
+	if (!channel.isOperator(&inviter))
+	{
+		inviter.sendReply("482", channelName + " :You're not a channel operator");
+		return;
+	}
 
-    // Envía invitación
-    channel.addInvited(target);
-    target->sendMessage(":" + inviter.getNickname() + " INVITE " + targetNick + " " + channelName + "\r\n");
-    inviter.sendMessage(":irc 341 " + inviter.getNickname() + " " + targetNick + " " + channelName + "\r\n");
+	Client *target = findClientByNick(targetNick);
+	if (!target)
+	{
+		inviter.sendReply("401", targetNick + " :No such nick");
+		return;
+	}
+
+	channel.addInvited(target);
+	target->sendMessage(":" + inviter.getNickname() + " INVITE " + targetNick + " " + channelName + "\r\n");
+	inviter.sendReply("341", inviter.getNickname() + " " + targetNick + " " + channelName);
 }

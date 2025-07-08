@@ -14,66 +14,65 @@
 
 extern std::map<std::string, Channel> _channels;
 
-void CommandHandler::handleJOIN(Client &client, std::istringstream &iss) {
+void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
+{
     std::string chanName;
     iss >> chanName;
 
-    if (chanName.empty()) {
-        client.sendMessage(":irc 461 JOIN :Not enough parameters\r\n");
+    if (chanName.empty())
+    {
+        client.sendReply("461", "JOIN :Not enough parameters");
         return;
     }
 
-    // Verificar si el canal existe
     bool isNewChannel = (_channels.find(chanName) == _channels.end());
-    
-    if (isNewChannel) {
-        // Crear canal y hacer al creador operador
+
+    if (isNewChannel)
+    {
         _channels[chanName] = Channel(chanName);
         _channels[chanName].addMember(&client);
         _channels[chanName].addOperator(&client);
     }
 
-    Channel& channel = _channels[chanName];
+    Channel &channel = _channels[chanName];
 
-    // --- Verificaciones para canales existentes ---
-    if (!isNewChannel) {		
-        // 1. ¿El canal es +i y el cliente NO está invitado?
-        if (channel.hasMode('i') && !channel.isInvited(&client)) {
-            client.sendMessage(":irc 473 " + client.getNickname() + " " + chanName + " :Cannot join channel (+i)\r\n");
+    if (!isNewChannel)
+    {
+        if (channel.hasMode('i') && !channel.isInvited(&client))
+        {
+            client.sendReply("473", client.getNickname() + " " + chanName + " :Cannot join channel (+i)");
             return;
         }
 
-        // 2. ¿El cliente ya está en el canal?
-        if (channel.getMembers().count(&client)) {
-            client.sendMessage(":irc 443 " + client.getNickname() + " " + chanName + " :is already on channel\r\n");
+        if (channel.getMembers().count(&client))
+        {
+            client.sendReply("443", client.getNickname() + " " + chanName + " :is already on channel");
             return;
         }
 
-		// 3. ¿El canal es +k y el cliente NO tiene la clave correcta?
-		if (channel.hasKey()) {
-			std::string key;
-			iss >> key;
-			if (key.empty() || key != channel.getKey()) {
-				client.sendMessage(":irc 475 " + client.getNickname() + " " + chanName + " :Cannot join channel (+k)\r\n");
-				return;
-			}
-		}
+        if (channel.hasKey())
+        {
+            std::string key;
+            iss >> key;
+            if (key.empty() || key != channel.getKey())
+            {
+                client.sendReply("475", client.getNickname() + " " + chanName + " :Cannot join channel (+k)");
+                return;
+            }
+        }
 
-		if (channel.getlimit() != 0 && channel.getlimit() <= channel.getnumberofmembers()) {
-				client.sendMessage(":irc 471 " + client.getNickname() + " " + chanName + " :Cannot join channel (+l)\r\n");
-				return;
-		}
+        if (channel.getlimit() != 0 && channel.getlimit() <= channel.getnumberofmembers())
+        {
+            client.sendReply("471", client.getNickname() + " " + chanName + " :Cannot join channel (+l)");
+            return;
+        }
     }
 
-    // --- Unir al cliente ---
     channel.addMember(&client);
-    
-    // Si fue invitado, limpiar la invitación (opcional)
-    if (channel.isInvited(&client)) {
+    if (channel.isInvited(&client))
+    {
         channel.removeInvited(&client);
     }
-
-    // Broadcast del JOIN a todos en el canal
     std::string joinMsg = ":" + client.getNickname() + " JOIN " + chanName + "\r\n";
     channel.broadcast(joinMsg);
 }
