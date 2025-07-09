@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:34:15 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/11 15:24:48 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/09 12:14:59 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ private:
 	std::string _modes;
 	std::string _key;
 	int	_limitmember;
+	std::string _topic;
+	bool _modeTopic;
 
 public:
 	Channel();
@@ -62,6 +64,13 @@ public:
 	int getlimit();
 	void removelimit();
 	int getnumberofmembers();
+
+	std::string getUserList() const;
+	
+	void setTopic(const std::string& topic);
+	const std::string& getTopic() const;
+	bool hasModeTopic() const;
+	void setModeTopic(bool mode);
 	
 };
 

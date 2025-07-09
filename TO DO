@@ -113,3 +113,19 @@ COMANDOS
 - INVITE nombre #canalprivado
 
 - KICK #canal nombre :razon
+
+
+
+
+
+
+
+-----------------------------------------
+HEXchat
+RAW LOG
+1º persona en unirse a canal:
+- join :canal
+- 353
+- 366
+- 324
+- 421

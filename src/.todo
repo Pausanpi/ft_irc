@@ -1,6 +1,7 @@
-- topic
+- topic - OK ✅
 - no sabemos si hace falta los mensajes del 0 al 4 como presentacion
-- el # del join
-- hay que mandar la lista de usuarios despues de hacer un join. tambien tiene que mandar quien es el operador, con un @ delante. 
-- que cuando te cambies el nick se puede mandar un mensaje de vuelta
-- el quit es demasiado salvaje (pero no hace falta porque lo dice paula)
+- el # del join - OK ✅
+- hay que mandar la lista de usuarios despues de hacer un join. tambien tiene que mandar quien es el operador, con un @ delante.  - OK ✅
+- que cuando te cambies el nick se puede mandar un mensaje de vuelta - OK ✅
+- el quit es demasiado salvaje (pero no hace falta porque lo dice paula) 
+- tenemos redundancia entre el broadcast y el sendReply en el join, a lo mejor está bien que estén los dos 

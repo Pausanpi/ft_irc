@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 16:53:43 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/11 15:25:14 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/09 12:16:42 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,5 +100,16 @@ void CommandHandler::handleMODE(Client &client, std::istringstream &iss)
 	{
 		channel.removelimit();
 		channel.broadcast(":" + client.getNickname() + " MODE " + target + " -l\r\n");
+	}
+
+	if (mode == "+t")
+	{
+		channel.setModeTopic(true);
+		channel.broadcast(":" + client.getNickname() + " MODE " + target + " +t\r\n");
+	}
+	else if (mode == "-t")
+	{
+		channel.setModeTopic(false);
+		channel.broadcast(":" + client.getNickname() + " MODE " + target + " -t\r\n");
 	}
 }
