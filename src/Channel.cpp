@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:35:05 by pausanch          #+#    #+#             */
-/*   Updated: 2025/07/09 12:15:30 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:52:48 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void Channel::addMember(Client* client) {
 
 void Channel::removeMember(Client* client) {
     _members.erase(client);
+	_operators.erase(client);
+	_invited.erase(client);
 }
 
 const std::set<Client*>& Channel::getMembers() const {

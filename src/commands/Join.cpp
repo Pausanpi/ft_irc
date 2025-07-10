@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/07/09 12:22:11 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:51:29 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
 	}
 	client.sendReply("366", client.getNickname() + " " + chanName + " :End of /NAMES list");
 
-	if (_channels[chanName].getName() == "")
+	if (_channels[chanName].getTopic().empty())
 			client.sendReply("331", chanName + " :No topic is set");
 		else
 			client.sendReply("332", chanName + " :" + _channels[chanName].getTopic());

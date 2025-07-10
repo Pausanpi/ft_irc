@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:39:46 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/11 16:09:15 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:00:19 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ public:
 
 	bool isRegistered() const;
 	void registerUser();
+	void setUnRegistered();
 
 	void clear();
 	void sendMessage(const std::string &msg) const;
