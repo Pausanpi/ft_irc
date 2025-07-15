@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 11:27:54 by pausanch          #+#    #+#             */
-/*   Updated: 2025/07/09 12:17:55 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/15 12:32:41 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,9 @@ void CommandHandler::handleTOPIC(Client &client, std::istringstream &iss)
 			client.sendReply("332", channelName + " :" + _channels[channelName].getTopic());
 		return;
 	}
-
-	topic = topic.substr(1); // Remove leading ':'
-
+	
+	if (!topic.empty() && topic[0] == ':')
+		topic = topic.substr(1);
 
 	if (!_channels[channelName].isOperator(&client) && _channels[channelName].hasModeTopic())
 	{
