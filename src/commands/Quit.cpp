@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/07/10 12:01:11 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/15 12:10:53 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,15 @@ void CommandHandler::handleQUIT(Client &client, std::istringstream &iss) {
 		if (channel.getMembers().count(&client)) {
 			channel.broadcast(":" + client.getNickname() + " QUIT :" + reason + "\r\n");
 			channel.removeMember(&client);
+			//revisar lista de operadores de canal y si está vacio darle operador a un random
+			if (channel.getMembers().empty()) {
+				_channels.erase(it++);
+				continue;
+			} else if (channel.getOperators().empty()) {
+				Client *newOp = *channel.getMembers().begin(); // Asignar el primer miembro como nuevo operador
+				channel.addOperator(newOp);
+				channel.broadcast(":" + newOp->getNickname() + " MODE " + channel.getName() + " +o " + newOp->getNickname() + "\r\n");
+			}
 		}
 		it++;
 	}

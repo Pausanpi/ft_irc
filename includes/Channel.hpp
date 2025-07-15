@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:34:15 by pausanch          #+#    #+#             */
-/*   Updated: 2025/07/09 12:14:59 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/15 11:59:34 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ public:
 
 	void addOperator(Client* client);
 	void removeOperator(Client* client);
+	const std::set<Client*>& getOperators() const;
 	bool isOperator(Client* client) const;
 	void broadcast(const std::string &msg);
 

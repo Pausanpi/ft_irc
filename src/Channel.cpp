@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:35:05 by pausanch          #+#    #+#             */
-/*   Updated: 2025/07/10 11:52:48 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/15 11:59:15 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,10 @@ void Channel::addOperator(Client* client) {
 
 void Channel::removeOperator(Client* client) {
 	_operators.erase(client);
+}
+
+const std::set<Client*>& Channel::getOperators() const {
+    return _operators;
 }
 
 bool Channel::isOperator(Client* client) const {
