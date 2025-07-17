@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/11 15:29:33 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:12:00 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,11 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
         client.sendReply("461", "JOIN :Not enough parameters");
         return;
     }
+	if (chanName[0] != '#')
+	{
+		client.sendReply("476", client.getNickname() + " " + chanName + " :Invalid channel name");
+		return;
+	}
 
     bool isNewChannel = (_channels.find(chanName) == _channels.end());
 
@@ -32,6 +37,7 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
         _channels[chanName] = Channel(chanName);
         _channels[chanName].addMember(&client);
         _channels[chanName].addOperator(&client);
+		_channels[chanName].setModeTopic(true);
     }
 
     Channel &channel = _channels[chanName];
@@ -75,4 +81,16 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
     }
     std::string joinMsg = ":" + client.getNickname() + " JOIN " + chanName + "\r\n";
     channel.broadcast(joinMsg);
+	std::string userList = channel.getUserList();
+	if (!userList.empty())
+	{
+		client.sendReply("353", "= " + chanName + " :" + userList);
+	}
+	client.sendReply("366", client.getNickname() + " " + chanName + " :End of /NAMES list");
+
+	if (_channels[chanName].getTopic().empty())
+			client.sendReply("331", chanName + " :No topic is set");
+		else
+			client.sendReply("332", chanName + " :" + _channels[chanName].getTopic());
+		return;
 }

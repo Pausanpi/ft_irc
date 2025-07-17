@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 15:00:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/05/27 13:05:19 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/09 11:27:33 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,15 @@ public:
 	void handlePASS(Client &client, std::istringstream &iss, const std::string &password);
     void handleNICK(Client &client, std::istringstream &iss);
     void handleUSER(Client &client, std::istringstream &iss);
+	void handleChangeNICK(Client &client, std::istringstream &iss);
     void handlePRIVMSG(Client &client, std::istringstream &iss);
     void handleJOIN(Client &client, std::istringstream &iss);
     void handleQUIT(Client &client, std::istringstream &iss);
 	void handleMODE(Client &client, std::istringstream &iss);
 	void handleKICK(Client &client, std::istringstream &iss);
 	void handleINVITE(Client &inviter, std::istringstream &iss);
+	void handleTOPIC(Client &client, std::istringstream &iss);
+
 
 	Client* findClientByNick(const std::string &nick);
 };

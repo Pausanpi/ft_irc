@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsalado- <jsalado-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:40:17 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/16 13:04:01 by jsalado-         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:06:06 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,17 @@ const std::string& Client::getUsername() const {
 }
 
 bool Client::isRegistered() const {
-	return _nickOK && _userOK;
+	if (_nickOK == true && _userOK == true) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+void Client::setUnRegistered() {
+	_registered = false;
+	_nickOK = false;
+	_userOK = false;
 }
 
 bool Client::getAuthenticated() const {

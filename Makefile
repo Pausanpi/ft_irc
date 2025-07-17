@@ -24,7 +24,7 @@ SRC_FILES = Main.cpp Server.cpp Client.cpp Channel.cpp \
 			commands/CommandHandler.cpp \
 			commands/Join.cpp commands/NickUser.cpp commands/Privmsg.cpp \
 			commands/Quit.cpp commands/Mode.cpp commands/Kick.cpp \
-			commands/Invite.cpp commands/Pass.cpp\
+			commands/Invite.cpp commands/Pass.cpp commands/Topic.cpp \
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.cpp=.o))

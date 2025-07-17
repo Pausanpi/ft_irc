@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:46:39 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/02 15:44:34 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:51:35 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,6 @@ public:
 	void initSocket();
 	void acceptNewClient();
 	void handleClientData(int index);
-	void removeClient(int index, int fd);
 	void handleInput(Client &client, const std::string &input);
 
 	
