@@ -12,16 +12,16 @@ En el MODE hay que hacer el + y el - de los modos
 
 ******************************************************************************
 
-Recomendación de cerrar los clietnes tambien en el destructor
+Recomendación de cerrar los clietnes tambien en el destructor -> OK ✅
 
-en el send, chekiar errores
+en el send, chekiar errores -> OK ✅
 
-me insisten mucho ne iniciar los fds a -1 o alguna wea así, no me entero bien. Es para luego para el accept y el handler y el clear
+me insisten mucho ne iniciar los fds a -1 o alguna wea así, no me entero bien. Es para luego para el accept y el handler y el clear -> OK ✅
 
-broadcast puede ser vulnerable a punteros nulos
+broadcast puede ser vulnerable a punteros nulos -> OK ✅
 Pointer-based sets (Client*)	⚠️	Ensure cleanup from all sets when client disconnects
 
-en el chanel la flag the invite only debería iniciarse.
+en el chanel la flag the invite only debería iniciarse. -> OK ✅
 
 me avisa tambien de lo del buffer y los mensajes completos
 
@@ -35,7 +35,7 @@ for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _cha
 }
 _clients[index].clear();
 
-em el handler se sufiere normalizarlo todo a mayusculas (un upper b'asicamente)
+em el handler se sufiere normalizarlo todo a mayusculas (un upper b'asicamente) -> OK ✅
 
 
 PARA EL CONTROL D
