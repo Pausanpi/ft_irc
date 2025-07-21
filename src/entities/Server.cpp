@@ -12,6 +12,8 @@
 
 #include "../includes/Server.hpp"
 #include "../includes/CommandHandler.hpp"
+#include <algorithm>
+#include <cctype>
 
 std::map<std::string, Channel> _channels;
 
@@ -206,6 +208,9 @@ void Server::handleInput(Client &client, const std::string &input)
 	std::istringstream iss(input);
 	std::string command;
 	iss >> command;
+
+	// Normalizar comando a mayúsculas
+	std::transform(command.begin(), command.end(), command.begin(), ::toupper);
 
 	CommandHandler handler(_clients, _channels);
 
