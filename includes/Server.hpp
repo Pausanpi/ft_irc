@@ -48,6 +48,7 @@ public:
 	void acceptNewClient();
 	void handleClientData(int index);
 	void handleInput(Client &client, const std::string &input);
+	void removeClient(int index);
 
 	
 private:

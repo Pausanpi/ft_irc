@@ -31,10 +31,19 @@ Server::Server(int port, const std::string &password) : _port(port), _password(p
 
 Server::~Server()
 {
-	for (int i = 0; i < MAX_CLIENTS; ++i)
-		if (_clients[i].getFd() > 0)
-			close(_clients[i].getFd());
-	close(_serverFd);
+	for (int i = 0; i < MAX_CLIENTS; ++i) {
+		if (_clients[i].getFd() > 0) {
+			for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+				it->second.removeMember(&_clients[i]);
+				it->second.removeOperator(&_clients[i]);
+				it->second.removeInvited(&_clients[i]);
+			}
+			_clients[i].clear();
+		}
+	}
+	if (_serverFd > 0) {
+		close(_serverFd);
+	}
 }
 
 int Server::getPort() const
@@ -261,4 +270,16 @@ void Server::handleInput(Client &client, const std::string &input)
 		std::cout << "Unknown command from registered user: " << command << std::endl;
 		client.sendReply("421", (client.getNickname().empty() ? "*" : client.getNickname()) + " " + command + " :Unknown command");
 	}
+}
+
+void Server::removeClient(int index) {
+	if (index < 0 || index >= MAX_CLIENTS || _clients[index].getFd() <= 0) {
+		return;
+	}
+	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+		it->second.removeMember(&_clients[index]);
+		it->second.removeOperator(&_clients[index]);
+		it->second.removeInvited(&_clients[index]);
+	}
+	_clients[index].clear();
 }
