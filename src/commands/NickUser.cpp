@@ -36,10 +36,12 @@ void CommandHandler::handleNICK(Client &client, std::istringstream &iss)
 	
 	if (client.isRegistered())
 	{
-		std::ostringstream oss;
-		oss << ":irc 001 " << client.getNickname()
-			<< " :Welcome to ft_irc, " << client.getNickname() << "!\r\n";
-		client.sendMessage(oss.str());
+		std::string message = ":Welcome to the Internet Relay Network " 
+			+ client.getNickname() 
+			+ "!" 
+			+ client.getUsername() 
+			+ "@localhost";
+		client.sendReply("001", message);
 	}
 }
 
@@ -60,10 +62,12 @@ void CommandHandler::handleUSER(Client &client, std::istringstream &iss)
 
 	if (client.isRegistered())
 	{
-		std::ostringstream oss;
-		oss << ":irc 001 " << client.getNickname()
-			<< " :Welcome to ft_irc, " << client.getNickname() << "!\r\n";
-		client.sendMessage(oss.str());
+		std::string message = ":Welcome to the Internet Relay Network " 
+			+ client.getNickname() 
+			+ "!" 
+			+ client.getUsername() 
+			+ "@localhost";
+		client.sendReply("001", message);
 	}
 }
 
