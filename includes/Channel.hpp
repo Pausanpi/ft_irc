@@ -46,6 +46,7 @@ public:
 	const std::set<Client*>& getOperators() const;
 	bool isOperator(Client* client) const;
 	void broadcast(const std::string &msg);
+	void broadcastToOthers(const std::string &msg, Client* excludeClient);
 
 	void addInvited(Client* client);
 	bool isInvited(Client* client) const;

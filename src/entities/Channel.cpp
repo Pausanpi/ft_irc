@@ -57,6 +57,14 @@ void Channel::broadcast(const std::string &msg) {
 	}
 }
 
+void Channel::broadcastToOthers(const std::string &msg, Client* excludeClient) {
+	for (std::set<Client*>::const_iterator it = _members.begin(); it != _members.end(); ++it) {
+		if (*it != excludeClient) {
+			(*it)->sendMessage(msg);
+		}
+	}
+}
+
 void Channel::addInvited(Client* client) {
 	_invited.insert(client);
 }

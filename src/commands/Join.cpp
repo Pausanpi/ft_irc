@@ -80,17 +80,15 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
         channel.removeInvited(&client);
     }
     std::string joinMsg = ":" + client.getNickname() + " JOIN " + chanName + "\r\n";
-    channel.broadcast(joinMsg);
+    channel.broadcastToOthers(joinMsg, &client);
+    client.sendMessage(":" + client.getNickname() + " JOIN " + chanName + "\r\n");
 	std::string userList = channel.getUserList();
 	if (!userList.empty())
-	{
 		client.sendReply("353", "= " + chanName + " :" + userList);
-	}
 	client.sendReply("366", client.getNickname() + " " + chanName + " :End of /NAMES list");
 
-	if (_channels[chanName].getTopic().empty())
-			client.sendReply("331", chanName + " :No topic is set");
-		else
-			client.sendReply("332", chanName + " :" + _channels[chanName].getTopic());
-		return;
+    if (_channels[chanName].getTopic().empty())
+		client.sendReply("331", chanName + " :No topic is set");
+	else
+		client.sendReply("332", chanName + " :" + _channels[chanName].getTopic());
 }

@@ -1,8 +1,8 @@
 - topic - OK ✅
-- no sabemos si hace falta los mensajes del 0 al 4 como presentacion
+- no sabemos si hace falta los mensajes del 0 al 4 como presentacion - OK ✅
 - el # del join - OK ✅
 - hay que mandar la lista de usuarios despues de hacer un join. tambien tiene que mandar quien es el operador, con un @ delante.  - OK ✅
 - que cuando te cambies el nick se puede mandar un mensaje de vuelta - OK ✅
-- el quit es demasiado salvaje (pero no hace falta porque lo dice paula) 
-- tenemos redundancia entre el broadcast y el sendReply en el join, a lo mejor está bien que estén los dos
+- el quit es demasiado salvaje (pero no hace falta porque lo dice paula) - OK ✅
+- tenemos redundancia entre el broadcast y el sendReply en el join, a lo mejor está bien que estén los dos - OK ✅
 - Cuando uno de los clientes sale del programa y está en un canal no se actualiza la lista de usuarios de ese canal - OK ✅
