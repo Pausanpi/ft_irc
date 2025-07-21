@@ -117,6 +117,7 @@ bool CommandHandler::handleOperatorMode(Client &client, Channel &channel, char m
 }
 
 bool CommandHandler::handleInviteMode(Client &client, Channel &channel, bool adding, ModeChange &result) {
+	(void)client; // Parameter kept for interface consistency
 	if (adding) {
 		channel.addMode('i');
 		result.changes += "+i";
@@ -128,6 +129,7 @@ bool CommandHandler::handleInviteMode(Client &client, Channel &channel, bool add
 }
 
 bool CommandHandler::handleTopicMode(Client &client, Channel &channel, bool adding, ModeChange &result) {
+	(void)client; // Parameter kept for interface consistency
 	if (adding) {
 		channel.setModeTopic(true);
 		result.changes += "+t";

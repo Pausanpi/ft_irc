@@ -1,6 +1,5 @@
 
 To avoid "dangling" pointers in Channel sets (_members, _operators, _invited), you must make sure to:
-→ Remove this client from all channels when removeClient() is called. -> OK ✅
 recomienda esto: a saber que es verdad
 for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
     it->second.removeMember(&_clients[index]);

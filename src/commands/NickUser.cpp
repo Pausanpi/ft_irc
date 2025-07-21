@@ -22,6 +22,11 @@ void CommandHandler::handleNICK(Client &client, std::istringstream &iss)
 		client.sendReply("431", "NICK :No nickname given");
 		return;
 	}
+
+	if (client.getNickname() == nick) {
+		return ;
+	}
+
 	for (int i = 0; i < MAX_CLIENTS; ++i)
 	{
 		if (_clients[i].getFd() > 0 && _clients[i].getNickname() == nick)
