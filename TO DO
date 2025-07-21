@@ -1,8 +1,8 @@
 El destructor mirarlo bien :)
 
-Try/catch en el main para que los errores sean throw(run time error)
+Try/catch en el main para que los errores sean throw(run time error) -> OK ✅
 
-En el PASS podríamos poner que el mensaje de bienvenido se pongo si o si luego del USER y quizás que si o si se tenga que poner el NICK y el USER después de la contraseña
+En el PASS podríamos poner que el mensaje de bienvenido se pongo si o si luego del USER y quizás que si o si se tenga que poner el NICK y el USER después de la contraseña -> OK ✅
 
 Revisar que cuando te logees no puedas ponerte un NICK que ya existe -> OK
 
