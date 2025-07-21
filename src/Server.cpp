@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsalado- <jsalado-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:41:00 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/16 15:54:39 by jsalado-         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:03:08 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,7 +174,12 @@ void Server::handleClientData(int index)
 	int bytes = recv(fd, buffer, BUFFER_SIZE - 1, 0);
 
 	if (bytes <= 0)
-		removeClient(index, fd);
+	{
+		std::string reason = "Connection lost";
+		std::istringstream quitStream("QUIT :" + reason);
+		CommandHandler handler(_clients, _channels);
+		handler.handleQUIT(_clients[index], quitStream);
+	}
 	else
 	{
 		buffer[bytes] = '\0';
@@ -194,12 +199,6 @@ void Server::handleClientData(int index)
 			handleInput(client, line);
 		}
 	}
-}
-
-void Server::removeClient(int index, int fd)
-{
-	std::cout << "Client disconnected (fd " << fd << ")" << std::endl;
-	_clients[index].clear();
 }
 
 void Server::handleInput(Client &client, const std::string &input)
@@ -238,6 +237,8 @@ void Server::handleInput(Client &client, const std::string &input)
 
 	if (command == "PRIVMSG")
 		handler.handlePRIVMSG(client, iss);
+	else if (command == "NICK")
+		handler.handleChangeNICK(client, iss);
 	else if (command == "JOIN")
 		handler.handleJOIN(client, iss);
 	else if (command == "QUIT")
@@ -248,6 +249,8 @@ void Server::handleInput(Client &client, const std::string &input)
 		handler.handleKICK(client, iss);
 	else if (command == "INVITE")
 		handler.handleINVITE(client, iss);
+	else if (command == "TOPIC")
+		handler.handleTOPIC(client, iss);
 	else if (command != "PASS" && command != "NICK" && command != "USER")
 	{
 		std::cout << "Unknown command from registered user: " << command << std::endl;

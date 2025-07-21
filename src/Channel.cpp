@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:35:05 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/11 15:23:40 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/15 11:59:15 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void Channel::addMember(Client* client) {
 
 void Channel::removeMember(Client* client) {
     _members.erase(client);
+	_operators.erase(client);
+	_invited.erase(client);
 }
 
 const std::set<Client*>& Channel::getMembers() const {
@@ -39,6 +41,10 @@ void Channel::addOperator(Client* client) {
 
 void Channel::removeOperator(Client* client) {
 	_operators.erase(client);
+}
+
+const std::set<Client*>& Channel::getOperators() const {
+    return _operators;
 }
 
 bool Channel::isOperator(Client* client) const {
@@ -114,4 +120,33 @@ void Channel::removelimit() {
 
 int Channel::getnumberofmembers() {
 	return(_members.size());
+}
+
+std::string Channel::getUserList() const {
+	std::string userList = "";
+	for (std::set<Client*>::const_iterator it = _members.begin(); it != _members.end(); ++it) {
+		if (isOperator(*it)) {
+			userList += "@" + (*it)->getNickname() + " ";
+		} else {
+			userList += (*it)->getNickname() + " ";
+		}
+	}
+	return userList;
+}
+
+
+void Channel::setTopic(const std::string& topic) {
+	_topic = topic;	
+}
+
+const std::string& Channel::getTopic() const {
+	return _topic;
+}
+
+bool Channel::hasModeTopic() const {
+	return _modeTopic;
+}
+
+void Channel::setModeTopic(bool mode) {
+	_modeTopic = mode;
 }
