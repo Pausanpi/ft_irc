@@ -1,4 +1,4 @@
-El destructor mirarlo bien :)
+El destructor mirarlo bien :) -> OK ✅
 
 Try/catch en el main para que los errores sean throw(run time error) -> OK ✅
 
@@ -8,7 +8,7 @@ Revisar que cuando te logees no puedas ponerte un NICK que ya existe -> OK
 
 Revisar los mensajes de error que todos estén bien
 
-En el MODE hay que hacer el + y el - de los modos
+En el MODE hay que hacer el + y el - de los modos -> OK ✅
 
 ******************************************************************************
 
@@ -19,14 +19,14 @@ en el send, chekiar errores -> OK ✅
 me insisten mucho ne iniciar los fds a -1 o alguna wea así, no me entero bien. Es para luego para el accept y el handler y el clear -> OK ✅
 
 broadcast puede ser vulnerable a punteros nulos -> OK ✅
-Pointer-based sets (Client*)	⚠️	Ensure cleanup from all sets when client disconnects
+Pointer-based sets (Client*)	⚠️	Ensure cleanup from all sets when client disconnects -> OK ✅
 
 en el chanel la flag the invite only debería iniciarse. -> OK ✅
 
-me avisa tambien de lo del buffer y los mensajes completos
+me avisa tambien de lo del buffer y los mensajes completos -> OK ✅
 
 To avoid "dangling" pointers in Channel sets (_members, _operators, _invited), you must make sure to:
-→ Remove this client from all channels when removeClient() is called.
+→ Remove this client from all channels when removeClient() is called. -> OK ✅
 recomienda esto: a saber que es verdad
 for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
     it->second.removeMember(&_clients[index]);
