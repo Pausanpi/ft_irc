@@ -18,7 +18,7 @@ void CommandHandler::handleKICK(Client &client, std::istringstream &iss)
 
     if (!(iss >> channelName >> targetNick))
     {
-        client.sendReply("461", client.getNickname() + " KICK :Not enough parameters");
+        client.sendReply("461", "KICK :Not enough parameters");
         return;
     }
 
@@ -43,14 +43,14 @@ void CommandHandler::handleKICK(Client &client, std::istringstream &iss)
     std::map<std::string, Channel>::iterator it = _channels.find(channelName);
     if (it == _channels.end())
     {
-        client.sendReply("403", client.getNickname() + " " + channelName + " :No such channel");
+        client.sendReply("403", channelName + " :No such channel");
         return;
     }
     Channel &channel = it->second;
 
     if (!channel.isOperator(&client))
     {
-        client.sendReply("482", client.getNickname() + " " + channelName + " :You're not a channel operator");
+        client.sendReply("482", channelName + " :You're not a channel operator");
         return;
     }
 
@@ -69,7 +69,7 @@ void CommandHandler::handleKICK(Client &client, std::istringstream &iss)
 
     if (!targetClient)
     {
-        client.sendReply("441", client.getNickname() + " " + targetNick + " " + channelName + " :They aren't on that channel");
+        client.sendReply("441", targetNick + " " + channelName + " :They aren't on that channel");
         return;
     }
 

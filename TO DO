@@ -6,7 +6,49 @@ En el PASS podríamos poner que el mensaje de bienvenido se pongo si o si luego 
 
 Revisar que cuando te logees no puedas ponerte un NICK que ya existe -> OK
 
-Revisar los mensajes de error que todos estén bien
+Revisar los mensajes de error que todos estén bien -> OK ✅
+
+✅ Errores corregidos:
+PRIVMSG.cpp:
+
+❌ Extra \r\n en sendReply → ✅ Eliminados
+❌ Formato incorrecto de 404, 403, 401 → ✅ Formato RFC correcto
+❌ Faltaban validaciones 411, 412 → ✅ Añadidas
+JOIN.cpp:
+
+❌ 366 con nickname extra → ✅ Solo canal según RFC
+KICK.cpp:
+
+❌ 461, 403, 482, 441 con formato incorrecto → ✅ Formato RFC estándar
+TOPIC.cpp:
+
+❌ 482 texto incompleto → ✅ "You're not a channel operator"
+INVITE.cpp:
+
+❌ 341 con nickname duplicado → ✅ Formato correcto
+📋 Códigos de error ahora conformes al RFC:
+401 - No such nick/channel
+403 - No such channel
+404 - Cannot send to channel
+411 - No recipient given
+412 - No text to send
+431 - No nickname given
+433 - Nickname is already in use
+441 - They aren't on that channel
+461 - Not enough parameters
+462 - Unauthorized command (already registered)
+464 - Password incorrect
+471 - Cannot join channel (+l)
+472 - Is unknown mode char to me
+473 - Cannot join channel (+i)
+475 - Cannot join channel (+k)
+482 - You're not a channel operator
+🎯 Mejoras aplicadas:
+Formato consistente - Todos los mensajes siguen el estándar RFC
+Sin duplicación - Eliminados nicknames redundantes en errores
+Sin \r\n extra - sendReply ya los maneja
+Validaciones completas - Añadidas validaciones faltantes
+Mensajes descriptivos - Textos claros y estándar
 
 En el MODE hay que hacer el + y el - de los modos -> OK ✅
 

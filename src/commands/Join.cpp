@@ -85,7 +85,7 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
 	std::string userList = channel.getUserList();
 	if (!userList.empty())
 		client.sendReply("353", "= " + chanName + " :" + userList);
-	client.sendReply("366", client.getNickname() + " " + chanName + " :End of /NAMES list");
+	client.sendReply("366", chanName + " :End of /NAMES list");
 
     if (_channels[chanName].getTopic().empty())
 		client.sendReply("331", chanName + " :No topic is set");
