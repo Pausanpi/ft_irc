@@ -165,7 +165,7 @@ void Server::acceptNewClient()
 
 	for (int i = 0; i < MAX_CLIENTS; ++i)
 	{
-		if (_clients[i].getFd() == 0)
+		if (_clients[i].getFd() == -1)
 		{
 			_clients[i].setFd(client_fd);
 			return;
