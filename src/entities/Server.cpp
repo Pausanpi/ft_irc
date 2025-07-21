@@ -186,26 +186,26 @@ void Server::handleClientData(int index)
 
 	if (bytes <= 0)
 	{
-		std::string reason = "Connection lost";
-		std::istringstream quitStream("QUIT :" + reason);
-		CommandHandler handler(_clients, _channels);
-		handler.handleQUIT(_clients[index], quitStream);
+		std::cout << "Client " << _clients[index].getNickname() << " disconnected" << std::endl;
+		removeClient(index);
+		return;
 	}
-	else
+
+	buffer[bytes] = '\0';
+	Client &client = _clients[index];
+	client.getRecvBuffer().append(buffer);
+
+	std::string::size_type pos;
+	bool strictMode = false;
+	std::string delimiter = strictMode ? "\r\n" : "\n";
+	while ((pos = client.getRecvBuffer().find(delimiter)) != std::string::npos)
 	{
-		buffer[bytes] = '\0';
-
-		Client &client = _clients[index];
-		client.getRecvBuffer().append(buffer);
-
-		std::string::size_type pos;
-
-		while ((pos = client.getRecvBuffer().find('\n')) != std::string::npos)
-		{
-			std::string line = client.getRecvBuffer().substr(0, pos);
-			client.getRecvBuffer().erase(0, pos + 1);
-			if (!line.empty() && line[line.size() - 1] == '\r')
-				line.erase(line.size() - 1);
+		std::string line = client.getRecvBuffer().substr(0, pos);
+		client.getRecvBuffer().erase(0, pos + delimiter.length());
+		if (!strictMode && !line.empty() && line[line.size() - 1] == '\r') {
+			line.erase(line.size() - 1);
+		}
+		if (!line.empty()) {
 			std::cout << "Received line: [" << line << "]" << std::endl;
 			handleInput(client, line);
 		}
