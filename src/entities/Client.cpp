@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 #include "../includes/Client.hpp"
+#include <iostream>
 
-Client::Client() : _fd(0), _registered(false), _authenticated(false) {}
+Client::Client() : _fd(-1), _registered(false), _authenticated(false), _nickOK(false), _userOK(false) {}
 
 Client::~Client() {}
 
@@ -75,16 +76,26 @@ void Client::registerUser() {
 }
 
 void Client::clear() {
-    close(_fd);
-    _fd = 0;
+    if (_fd > 0) {
+        close(_fd);
+    }
+    _fd = -1;
     _nickname.clear();
     _username.clear();
     _registered = false;
 	_authenticated = false;
+	_nickOK = false;
+	_userOK = false;
+	_recvBuffer.clear();
 }
 
 void Client::sendMessage(const std::string& msg) const {
-	send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL);
+	if (_fd <= 0) return;
+	
+	ssize_t result = send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL);
+	if (result == -1) {
+		std::cerr << "Error sending message to client " << _nickname << std::endl;
+	}
 }
 
 void Client::sendReply(const std::string& code, const std::string& message)
