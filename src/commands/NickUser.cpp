@@ -36,12 +36,7 @@ void CommandHandler::handleNICK(Client &client, std::istringstream &iss)
 	
 	if (client.isRegistered())
 	{
-		std::string message = ":Welcome to the Internet Relay Network " 
-			+ client.getNickname() 
-			+ "!" 
-			+ client.getUsername() 
-			+ "@localhost";
-		client.sendReply("001", message);
+		sendWelcomeMessages(client);
 	}
 }
 
@@ -62,12 +57,7 @@ void CommandHandler::handleUSER(Client &client, std::istringstream &iss)
 
 	if (client.isRegistered())
 	{
-		std::string message = ":Welcome to the Internet Relay Network " 
-			+ client.getNickname() 
-			+ "!" 
-			+ client.getUsername() 
-			+ "@localhost";
-		client.sendReply("001", message);
+		sendWelcomeMessages(client);
 	}
 }
 
@@ -98,4 +88,26 @@ void CommandHandler::handleChangeNICK(Client &client, std::istringstream &iss)
 	std::ostringstream oss;
 	oss << ":" << lastNick << "!" << lastNick << "@localhost" << " NICK :" << client.getNickname() << "\r\n";
 	client.sendMessage(oss.str());
+}
+
+void CommandHandler::sendWelcomeMessages(Client &client)
+{
+	std::string message001 = ":Welcome to the Internet Relay Network " 
+		+ client.getNickname() 
+		+ "!" 
+		+ client.getUsername() 
+		+ "@localhost";
+	client.sendReply("001", message001);
+
+	std::string message002 = ":Your host is ft_irc, running version 1.0";
+	client.sendReply("002", message002);
+
+	std::string message003 = ":This server was created today";
+	client.sendReply("003", message003);
+
+	std::string message004 = "ft_irc 1.0 o itkol";
+	client.sendReply("004", message004);
+
+	std::string message005 = "CHANTYPES=# PREFIX=(o)@ NETWORK=ft_irc NICKLEN=9 CHANNELLEN=50 :are supported by this server";
+	client.sendReply("005", message005);
 }

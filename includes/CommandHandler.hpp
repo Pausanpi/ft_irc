@@ -43,6 +43,9 @@ public:
 	void handleINVITE(Client &inviter, std::istringstream &iss);
 	void handleTOPIC(Client &client, std::istringstream &iss);
 
+	// Helper methods
+	void sendWelcomeMessages(Client &client);
+
 
 	Client* findClientByNick(const std::string &nick);
 };
