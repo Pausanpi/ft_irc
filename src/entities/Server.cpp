@@ -276,10 +276,39 @@ void Server::removeClient(int index) {
 	if (index < 0 || index >= MAX_CLIENTS || _clients[index].getFd() <= 0) {
 		return;
 	}
-	for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
-		it->second.removeMember(&_clients[index]);
-		it->second.removeOperator(&_clients[index]);
-		it->second.removeInvited(&_clients[index]);
+
+	Client &client = _clients[index];
+	std::string nickname = client.getNickname();
+	
+	if (client.isRegistered() && !nickname.empty()) {
+		std::map<std::string, Channel>::iterator it = _channels.begin();
+		while (it != _channels.end()) {
+			Channel &channel = it->second;
+			if (channel.getMembers().count(&client)) {
+				channel.broadcast(":" + nickname + " QUIT :Connection lost\r\n");
+				channel.removeMember(&client);
+				channel.removeOperator(&client);
+				channel.removeInvited(&client);
+				
+				if (channel.getMembers().empty()) {
+					_channels.erase(it++);
+					continue;
+				}
+				else if (channel.getOperators().empty()) {
+					Client *newOp = *channel.getMembers().begin();
+					channel.addOperator(newOp);
+					channel.broadcast(":" + newOp->getNickname() + " MODE " + channel.getName() + " +o " + newOp->getNickname() + "\r\n");
+				}
+			}
+			++it;
+		}
+	} else {
+		for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+			it->second.removeMember(&client);
+			it->second.removeOperator(&client);
+			it->second.removeInvited(&client);
+		}
 	}
-	_clients[index].clear();
+	
+	client.clear();
 }
