@@ -102,6 +102,8 @@ bool CommandHandler::handleChannelMode(Client &client, Channel &channel, char mo
 	switch (mode) {
 		case 'i':
 			return handleInviteMode(client, channel, adding, result);
+		case 'n':
+			return handleNoExternalMode(client, channel, adding, result);
 		case 't':
 			return handleTopicMode(client, channel, adding, result);
 		case 'k':
@@ -130,6 +132,18 @@ bool CommandHandler::handleInviteMode(Client &client, Channel &channel, bool add
 	} else {
 		channel.removeMode('i');
 		result.changes += "-i";
+	}
+	return true;
+}
+
+bool CommandHandler::handleNoExternalMode(Client &client, Channel &channel, bool adding, ModeChange &result) {
+	(void)client;
+	if (adding) {
+		channel.addMode('n');
+		result.changes += "+n";
+	} else {
+		channel.removeMode('n');
+		result.changes += "-n";
 	}
 	return true;
 }

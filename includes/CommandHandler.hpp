@@ -63,6 +63,7 @@ public:
 	
 	// Individual mode handlers
 	bool handleInviteMode(Client &client, Channel &channel, bool adding, ModeChange &result);
+	bool handleNoExternalMode(Client &client, Channel &channel, bool adding, ModeChange &result);
 	bool handleTopicMode(Client &client, Channel &channel, bool adding, ModeChange &result);
 	bool handleKeyMode(Client &client, Channel &channel, bool adding, std::istringstream &iss, ModeChange &result);
 	bool handleLimitMode(Client &client, Channel &channel, bool adding, std::istringstream &iss, ModeChange &result);
@@ -72,4 +73,4 @@ public:
 	Client* findClientByNick(const std::string &nick);
 };
 
-#endif // COMMAND_HANDLER_HPP
+#endif

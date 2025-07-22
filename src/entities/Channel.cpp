@@ -12,6 +12,7 @@
 
 #include "../includes/Channel.hpp"
 #include "../includes/Client.hpp"
+#include <algorithm>
 
 Channel::Channel() : _name("default"), _inviteOnly(false), _limitmember(0), _modeTopic(false) {}
 
@@ -100,8 +101,26 @@ bool Channel::hasMode(char mode) const {
 	return _modes.find(mode) != std::string::npos;
 }
 
-const std::string& Channel::getModes() const {
-	return _modes;
+std::string Channel::getModes() const {
+	std::string sortedModes = _modes;
+	std::string ircOrder = "ntikl";
+	std::string result;
+	
+	for (size_t i = 0; i < ircOrder.length(); ++i) {
+		char mode = ircOrder[i];
+		if (sortedModes.find(mode) != std::string::npos) {
+			result += mode;
+		}
+	}
+	
+	for (size_t i = 0; i < sortedModes.length(); ++i) {
+		char mode = sortedModes[i];
+		if (ircOrder.find(mode) == std::string::npos) {
+			result += mode;
+		}
+	}
+	
+	return result;
 }
 
 void Channel::setKey(const std::string& key) {

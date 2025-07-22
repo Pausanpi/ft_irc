@@ -56,7 +56,7 @@ public:
 	void addMode(char mode);
 	void removeMode(char mode);
 	bool hasMode(char mode) const;
-	const std::string& getModes() const;
+	std::string getModes() const;
 
 	void setKey(const std::string& key);
 	void removeKey();
