@@ -80,8 +80,17 @@ void CommandHandler::handleKICK(Client &client, std::istringstream &iss)
     }
     kickMsg += "\r\n";
     channel.broadcast(kickMsg);
+    bool wasOperator = channel.isOperator(targetClient);
+    
     channel.removeMember(targetClient);
     channel.removeOperator(targetClient);
+
+    if (wasOperator && channel.getOperators().empty() && !channel.getMembers().empty()) {
+        Client *newOp = *channel.getMembers().begin();
+        channel.addOperator(newOp);
+        std::string opMsg = ":" + newOp->getNickname() + " MODE " + channelName + " +o " + newOp->getNickname() + "\r\n";
+        channel.broadcast(opMsg);
+    }
 
     targetClient->sendMessage(":" + client.getNickname() + " KICK " + channelName + " :" + (reason.empty() ? "Kicked" : reason) + "\r\n");
 }

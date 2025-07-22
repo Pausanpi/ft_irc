@@ -1,7 +1,5 @@
 cuando entras por nc, manda un mensaje que server is full pero sí que deja entrar
 
-kick debe poner OP al usuario más antiguo que entró
-
 por defecto sale mode +nt, debería salir solo mode +. cuando crea el canal solo puede cambiar el topic el OP.
 
 cuando hago +i debería aparecer +nti, pero no se añade.
