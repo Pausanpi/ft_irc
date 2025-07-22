@@ -1,5 +1,3 @@
 cuando entras por nc, manda un mensaje que server is full pero sí que deja entrar
 
-✓ en nc, cuando introducimos pass, tiene que hacer pass nick y user. queremos un mensaje de aceptado o rechazado. [RESUELTO]
-
 en privmsg si ponemos : pilla todo, pero si no ponemos : solo pasa el primer argumento.
