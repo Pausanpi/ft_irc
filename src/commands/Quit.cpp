@@ -16,32 +16,49 @@ void CommandHandler::handleQUIT(Client &client, std::istringstream &iss) {
 	std::string reason;
 	getline(iss, reason);
     
-	if (reason.empty())
+	if (reason.empty()) {
 		reason = "Client Quit";
-	else
-		reason = reason.substr(reason.find_first_not_of(" :"));
-
-	std::map<std::string, Channel>::iterator it;
-	it = _channels.begin();
-	while (it != _channels.end()) {
-		Channel &channel = it->second;
-		if (channel.getMembers().count(&client)) {
-			channel.broadcast(":" + client.getNickname() + " QUIT :" + reason + "\r\n");
-			channel.removeMember(&client);
-			//revisar lista de operadores de canal y si está vacio darle operador a un random
-			if (channel.getMembers().empty()) {
-				_channels.erase(it++);
-				continue;
-			} else if (channel.getOperators().empty()) {
-				Client *newOp = *channel.getMembers().begin(); // Asignar el primer miembro como nuevo operador
-				channel.addOperator(newOp);
-				channel.broadcast(":" + newOp->getNickname() + " MODE " + channel.getName() + " +o " + newOp->getNickname() + "\r\n");
-			}
+	} else {
+		size_t start = reason.find_first_not_of(" :");
+		if (start != std::string::npos) {
+			reason = reason.substr(start);
+		} else {
+			reason = "Client Quit";
 		}
-		it++;
 	}
 
-	client.sendMessage("ERROR :Closing Link: " + client.getNickname() + " (Quit: " + reason + ")\r\n");
-	std::cout << "Client " << client.getNickname() << " has quit: " << reason << std::endl;
+	if (client.isRegistered()) {
+		std::string quitMessage = ":" + client.getNickname() + "!" + client.getUsername() + "@localhost QUIT :" + reason + "\r\n";
+		std::map<std::string, Channel>::iterator it = _channels.begin();
+		while (it != _channels.end()) {
+			Channel &channel = it->second;
+			if (channel.getMembers().count(&client)) {
+				channel.broadcastToOthers(quitMessage, &client);
+				channel.removeMember(&client);
+				if (channel.getMembers().empty()) {
+					std::cout << "Server: Channel " << channel.getName() << " is now empty, removing" << std::endl;
+					_channels.erase(it++);
+					continue;
+				} 
+				else if (channel.getOperators().empty() && !channel.getMembers().empty()) {
+					Client *newOp = *channel.getMembers().begin();
+					channel.addOperator(newOp);
+					std::string modeMessage = ":irc MODE " + channel.getName() + " +o " + newOp->getNickname() + "\r\n";
+					channel.broadcast(modeMessage);
+					std::cout << "Server: Auto-promoted " << newOp->getNickname() << " to operator in " << channel.getName() << std::endl;
+				}
+			}
+			++it;
+		}
+		
+		std::cout << "Server: " << client.getNickname() << "!" << client.getUsername() << "@localhost has quit (" << reason << ")" << std::endl;
+	} else {
+		if (!client.getNickname().empty()) {	
+			std::cout << "Server: " << client.getNickname() << " has quit during registration (" << reason << ")" << std::endl;
+		} else {
+			std::cout << "Server: Unregistered client has quit (" << reason << ")" << std::endl;
+		}
+	}
 	client.setUnRegistered();
+	client.clear();
 }

@@ -227,6 +227,8 @@ void Server::handleInput(Client &client, const std::string &input)
 	{
 		if (command == "PASS")
 			handler.handlePASS(client, iss, _password);
+		else if (command == "QUIT")
+			handler.handleQUIT(client, iss);
 		else
 		{
 			std::cout << "Client not authenticated. Command ignored: " << command << std::endl;
