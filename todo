@@ -1,8 +1,5 @@
 cuando entras por nc, manda un mensaje que server is full pero sí que deja entrar
 
-
-si pones /join # -> no debería crear un canal, debería decir que parametros insuficientes
-
 kick debe poner OP al usuario más antiguo que entró
 
 por defecto sale mode +nt, debería salir solo mode +. cuando crea el canal solo puede cambiar el topic el OP.

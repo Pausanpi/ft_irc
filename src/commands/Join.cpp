@@ -29,6 +29,11 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
 		client.sendReply("476", client.getNickname() + " " + chanName + " :Invalid channel name");
 		return;
 	}
+	if (chanName.length() == 1)
+	{
+		client.sendReply("461", "JOIN :Not enough parameters");
+		return;
+	}
 
     bool isNewChannel = (_channels.find(chanName) == _channels.end());
 
