@@ -35,6 +35,11 @@ void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss)
         }
     } else {
         msg = peek;
+        std::string rest;
+        std::getline(iss, rest);
+        if (!rest.empty()) {
+            msg += rest;
+        }
     }
 
     if (msg.empty()) {
