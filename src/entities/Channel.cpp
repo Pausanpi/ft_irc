@@ -12,10 +12,11 @@
 
 #include "../includes/Channel.hpp"
 #include "../includes/Client.hpp"
+#include <algorithm>
 
-Channel::Channel() : _name("default") {}
+Channel::Channel() : _name("default"), _inviteOnly(false), _limitmember(0), _modeTopic(false) {}
 
-Channel::Channel(const std::string& name) : _name(name) {}
+Channel::Channel(const std::string& name) : _name(name), _inviteOnly(false), _limitmember(0), _modeTopic(false) {}
 
 const std::string& Channel::getName() const {
     return _name;
@@ -53,7 +54,17 @@ bool Channel::isOperator(Client* client) const {
 
 void Channel::broadcast(const std::string &msg) {
 	for (std::set<Client*>::const_iterator it = _members.begin(); it != _members.end(); ++it) {
-		(*it)->sendMessage(msg);
+		if (*it != NULL && (*it)->getFd() > 0) {
+			(*it)->sendMessage(msg);
+		}
+	}
+}
+
+void Channel::broadcastToOthers(const std::string &msg, Client* excludeClient) {
+	for (std::set<Client*>::const_iterator it = _members.begin(); it != _members.end(); ++it) {
+		if (*it != NULL && (*it)->getFd() > 0 && *it != excludeClient) {
+			(*it)->sendMessage(msg);
+		}
 	}
 }
 
@@ -88,6 +99,28 @@ void Channel::removeMode(char mode) {
 
 bool Channel::hasMode(char mode) const {
 	return _modes.find(mode) != std::string::npos;
+}
+
+std::string Channel::getModes() const {
+	std::string sortedModes = _modes;
+	std::string ircOrder = "ntikl";
+	std::string result;
+	
+	for (size_t i = 0; i < ircOrder.length(); ++i) {
+		char mode = ircOrder[i];
+		if (sortedModes.find(mode) != std::string::npos) {
+			result += mode;
+		}
+	}
+	
+	for (size_t i = 0; i < sortedModes.length(); ++i) {
+		char mode = sortedModes[i];
+		if (ircOrder.find(mode) == std::string::npos) {
+			result += mode;
+		}
+	}
+	
+	return result;
 }
 
 void Channel::setKey(const std::string& key) {

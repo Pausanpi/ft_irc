@@ -35,5 +35,5 @@ void CommandHandler::handleINVITE(Client &inviter, std::istringstream &iss)
 
 	channel.addInvited(target);
 	target->sendMessage(":" + inviter.getNickname() + " INVITE " + targetNick + " " + channelName + "\r\n");
-	inviter.sendReply("341", inviter.getNickname() + " " + targetNick + " " + channelName);
+	inviter.sendReply("341", targetNick + " " + channelName);
 }

@@ -43,7 +43,7 @@ void CommandHandler::handleTOPIC(Client &client, std::istringstream &iss)
 
 	if (!_channels[channelName].isOperator(&client) && _channels[channelName].hasModeTopic())
 	{
-		client.sendReply("482", channelName + " :You're not channel operator");
+		client.sendReply("482", channelName + " :You're not a channel operator");
 		return;
 	}
 

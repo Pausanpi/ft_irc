@@ -29,6 +29,11 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
 		client.sendReply("476", client.getNickname() + " " + chanName + " :Invalid channel name");
 		return;
 	}
+	if (chanName.length() == 1)
+	{
+		client.sendReply("461", "JOIN :Not enough parameters");
+		return;
+	}
 
     bool isNewChannel = (_channels.find(chanName) == _channels.end());
 
@@ -37,7 +42,7 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
         _channels[chanName] = Channel(chanName);
         _channels[chanName].addMember(&client);
         _channels[chanName].addOperator(&client);
-		_channels[chanName].setModeTopic(true);
+        _channels[chanName].setModeTopic(true);
     }
 
     Channel &channel = _channels[chanName];
@@ -80,17 +85,15 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
         channel.removeInvited(&client);
     }
     std::string joinMsg = ":" + client.getNickname() + " JOIN " + chanName + "\r\n";
-    channel.broadcast(joinMsg);
+    channel.broadcastToOthers(joinMsg, &client);
+    client.sendMessage(":" + client.getNickname() + " JOIN " + chanName + "\r\n");
 	std::string userList = channel.getUserList();
 	if (!userList.empty())
-	{
 		client.sendReply("353", "= " + chanName + " :" + userList);
-	}
-	client.sendReply("366", client.getNickname() + " " + chanName + " :End of /NAMES list");
+	client.sendReply("366", chanName + " :End of /NAMES list");
 
-	if (_channels[chanName].getTopic().empty())
-			client.sendReply("331", chanName + " :No topic is set");
-		else
-			client.sendReply("332", chanName + " :" + _channels[chanName].getTopic());
-		return;
+    if (_channels[chanName].getTopic().empty())
+		client.sendReply("331", chanName + " :No topic is set");
+	else
+		client.sendReply("332", chanName + " :" + _channels[chanName].getTopic());
 }

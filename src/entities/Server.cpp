@@ -12,6 +12,8 @@
 
 #include "../includes/Server.hpp"
 #include "../includes/CommandHandler.hpp"
+#include <algorithm>
+#include <cctype>
 
 std::map<std::string, Channel> _channels;
 
@@ -29,10 +31,19 @@ Server::Server(int port, const std::string &password) : _port(port), _password(p
 
 Server::~Server()
 {
-	for (int i = 0; i < MAX_CLIENTS; ++i)
-		if (_clients[i].getFd() > 0)
-			close(_clients[i].getFd());
-	close(_serverFd);
+	for (int i = 0; i < MAX_CLIENTS; ++i) {
+		if (_clients[i].getFd() > 0) {
+			for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+				it->second.removeMember(&_clients[i]);
+				it->second.removeOperator(&_clients[i]);
+				it->second.removeInvited(&_clients[i]);
+			}
+			_clients[i].clear();
+		}
+	}
+	if (_serverFd > 0) {
+		close(_serverFd);
+	}
 }
 
 int Server::getPort() const
@@ -154,7 +165,7 @@ void Server::acceptNewClient()
 
 	for (int i = 0; i < MAX_CLIENTS; ++i)
 	{
-		if (_clients[i].getFd() == 0)
+		if (_clients[i].getFd() == -1)
 		{
 			_clients[i].setFd(client_fd);
 			return;
@@ -175,26 +186,26 @@ void Server::handleClientData(int index)
 
 	if (bytes <= 0)
 	{
-		std::string reason = "Connection lost";
-		std::istringstream quitStream("QUIT :" + reason);
-		CommandHandler handler(_clients, _channels);
-		handler.handleQUIT(_clients[index], quitStream);
+		std::cout << "Client " << _clients[index].getNickname() << " disconnected" << std::endl;
+		removeClient(index);
+		return;
 	}
-	else
+
+	buffer[bytes] = '\0';
+	Client &client = _clients[index];
+	client.getRecvBuffer().append(buffer);
+
+	std::string::size_type pos;
+	bool strictMode = false;
+	std::string delimiter = strictMode ? "\r\n" : "\n";
+	while ((pos = client.getRecvBuffer().find(delimiter)) != std::string::npos)
 	{
-		buffer[bytes] = '\0';
-
-		Client &client = _clients[index];
-		client.getRecvBuffer().append(buffer);
-
-		std::string::size_type pos;
-
-		while ((pos = client.getRecvBuffer().find('\n')) != std::string::npos)
-		{
-			std::string line = client.getRecvBuffer().substr(0, pos);
-			client.getRecvBuffer().erase(0, pos + 1);
-			if (!line.empty() && line[line.size() - 1] == '\r')
-				line.erase(line.size() - 1);
+		std::string line = client.getRecvBuffer().substr(0, pos);
+		client.getRecvBuffer().erase(0, pos + delimiter.length());
+		if (!strictMode && !line.empty() && line[line.size() - 1] == '\r') {
+			line.erase(line.size() - 1);
+		}
+		if (!line.empty()) {
 			std::cout << "Received line: [" << line << "]" << std::endl;
 			handleInput(client, line);
 		}
@@ -206,6 +217,9 @@ void Server::handleInput(Client &client, const std::string &input)
 	std::istringstream iss(input);
 	std::string command;
 	iss >> command;
+
+	// Normalizar comando a mayúsculas
+	std::transform(command.begin(), command.end(), command.begin(), ::toupper);
 
 	CommandHandler handler(_clients, _channels);
 
@@ -256,4 +270,45 @@ void Server::handleInput(Client &client, const std::string &input)
 		std::cout << "Unknown command from registered user: " << command << std::endl;
 		client.sendReply("421", (client.getNickname().empty() ? "*" : client.getNickname()) + " " + command + " :Unknown command");
 	}
+}
+
+void Server::removeClient(int index) {
+	if (index < 0 || index >= MAX_CLIENTS || _clients[index].getFd() <= 0) {
+		return;
+	}
+
+	Client &client = _clients[index];
+	std::string nickname = client.getNickname();
+	
+	if (client.isRegistered() && !nickname.empty()) {
+		std::map<std::string, Channel>::iterator it = _channels.begin();
+		while (it != _channels.end()) {
+			Channel &channel = it->second;
+			if (channel.getMembers().count(&client)) {
+				channel.broadcast(":" + nickname + " QUIT :Connection lost\r\n");
+				channel.removeMember(&client);
+				channel.removeOperator(&client);
+				channel.removeInvited(&client);
+				
+				if (channel.getMembers().empty()) {
+					_channels.erase(it++);
+					continue;
+				}
+				else if (channel.getOperators().empty()) {
+					Client *newOp = *channel.getMembers().begin();
+					channel.addOperator(newOp);
+					channel.broadcast(":" + newOp->getNickname() + " MODE " + channel.getName() + " +o " + newOp->getNickname() + "\r\n");
+				}
+			}
+			++it;
+		}
+	} else {
+		for (std::map<std::string, Channel>::iterator it = _channels.begin(); it != _channels.end(); ++it) {
+			it->second.removeMember(&client);
+			it->second.removeOperator(&client);
+			it->second.removeInvited(&client);
+		}
+	}
+	
+	client.clear();
 }

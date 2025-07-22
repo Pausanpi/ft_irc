@@ -46,6 +46,7 @@ public:
 	const std::set<Client*>& getOperators() const;
 	bool isOperator(Client* client) const;
 	void broadcast(const std::string &msg);
+	void broadcastToOthers(const std::string &msg, Client* excludeClient);
 
 	void addInvited(Client* client);
 	bool isInvited(Client* client) const;
@@ -55,6 +56,7 @@ public:
 	void addMode(char mode);
 	void removeMode(char mode);
 	bool hasMode(char mode) const;
+	std::string getModes() const;
 
 	void setKey(const std::string& key);
 	void removeKey();

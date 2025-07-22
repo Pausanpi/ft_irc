@@ -41,7 +41,7 @@ void CommandHandler::handleQUIT(Client &client, std::istringstream &iss) {
 		it++;
 	}
 
+	client.sendMessage("ERROR :Closing Link: " + client.getNickname() + " (Quit: " + reason + ")\r\n");
 	std::cout << "Client " << client.getNickname() << " has quit: " << reason << std::endl;
 	client.setUnRegistered();
-	client.clear();
 }

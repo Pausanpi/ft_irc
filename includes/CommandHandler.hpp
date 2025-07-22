@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <cstdlib>
 #include <string>
 #include <map>
 #include "Client.hpp"
@@ -43,8 +44,33 @@ public:
 	void handleINVITE(Client &inviter, std::istringstream &iss);
 	void handleTOPIC(Client &client, std::istringstream &iss);
 
+	// Helper methods
+	void sendWelcomeMessages(Client &client);
+	
+	// MODE command helpers
+	struct ModeChange {
+		std::string changes;
+		std::string params;
+		ModeChange() : changes(""), params("") {}
+	};
+	
+	void processModeString(Client &client, Channel &channel, const std::string &target, 
+						  const std::string &modestring, std::istringstream &iss);
+	bool handleChannelMode(Client &client, Channel &channel, char mode, bool adding, 
+						  std::istringstream &iss, ModeChange &result);
+	bool handleOperatorMode(Client &client, Channel &channel, char mode, bool adding, 
+						   std::istringstream &iss, ModeChange &result);
+	
+	// Individual mode handlers
+	bool handleInviteMode(Client &client, Channel &channel, bool adding, ModeChange &result);
+	bool handleNoExternalMode(Client &client, Channel &channel, bool adding, ModeChange &result);
+	bool handleTopicMode(Client &client, Channel &channel, bool adding, ModeChange &result);
+	bool handleKeyMode(Client &client, Channel &channel, bool adding, std::istringstream &iss, ModeChange &result);
+	bool handleLimitMode(Client &client, Channel &channel, bool adding, std::istringstream &iss, ModeChange &result);
+	bool handleOperatorPrivilege(Client &client, Channel &channel, bool adding, std::istringstream &iss, ModeChange &result);
+
 
 	Client* findClientByNick(const std::string &nick);
 };
 
-#endif // COMMAND_HANDLER_HPP
+#endif
