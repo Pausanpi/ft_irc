@@ -23,26 +23,23 @@ void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss)
     }
 
     std::string msg;
-    std::getline(iss, msg);
-
-    size_t pos = msg.find_first_not_of(' ');
-    if (pos != std::string::npos)
-    {
-        msg = msg.substr(pos);
-    }
-    else
-    {
-        msg.clear();
+    std::string peek;
+    iss >> peek;
+    
+    if (!peek.empty() && peek[0] == ':') {
+        msg = peek.substr(1);
+        std::string rest;
+        std::getline(iss, rest);
+        if (!rest.empty()) {
+            msg += rest;
+        }
+    } else {
+        msg = peek;
     }
 
     if (msg.empty()) {
         client.sendReply("412", ":No text to send");
         return;
-    }
-
-    if (!msg.empty() && msg[0] == ':')
-    {
-        msg = msg.substr(1);
     }
 
     std::ostringstream oss;
