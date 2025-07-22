@@ -36,4 +36,5 @@ void CommandHandler::handlePASS(Client &client, std::istringstream &iss, const s
 	}
 
 	client.setAutenticated(true);
+	client.sendMessage("NOTICE AUTH :*** Password accepted. Please provide NICK and USER commands.\r\n");
 }
