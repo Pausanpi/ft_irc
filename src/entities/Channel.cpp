@@ -100,6 +100,10 @@ bool Channel::hasMode(char mode) const {
 	return _modes.find(mode) != std::string::npos;
 }
 
+const std::string& Channel::getModes() const {
+	return _modes;
+}
+
 void Channel::setKey(const std::string& key) {
 	_key = key;
 }

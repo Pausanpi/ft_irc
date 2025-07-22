@@ -36,7 +36,13 @@ void CommandHandler::handleMODE(Client &client, std::istringstream &iss)
 	Channel &channel = _channels[target];
 
 	if (modestring.empty()) {
-		client.sendReply("324", target + " +nt");
+		std::string modes = channel.getModes();
+		// Si no hay modos explícitos, mostrar solo el '+'
+		if (modes.empty()) {
+			client.sendReply("324", target + " +");
+		} else {
+			client.sendReply("324", target + " +" + modes);
+		}
 		return;
 	}
 
@@ -132,9 +138,11 @@ bool CommandHandler::handleTopicMode(Client &client, Channel &channel, bool addi
 	(void)client;
 	if (adding) {
 		channel.setModeTopic(true);
+		channel.addMode('t');
 		result.changes += "+t";
 	} else {
 		channel.setModeTopic(false);
+		channel.removeMode('t');
 		result.changes += "-t";
 	}
 	return true;

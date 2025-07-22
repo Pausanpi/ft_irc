@@ -42,7 +42,7 @@ void CommandHandler::handleJOIN(Client &client, std::istringstream &iss)
         _channels[chanName] = Channel(chanName);
         _channels[chanName].addMember(&client);
         _channels[chanName].addOperator(&client);
-		_channels[chanName].setModeTopic(true);
+        _channels[chanName].setModeTopic(true);
     }
 
     Channel &channel = _channels[chanName];
