@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jsalado- <jsalado-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/19 17:40:17 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/16 13:04:01 by jsalado-         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:06:06 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Client.hpp"
+#include <iostream>
 
-Client::Client() : _fd(0), _registered(false), _authenticated(false) {}
+Client::Client() : _fd(-1), _registered(false), _authenticated(false), _nickOK(false), _userOK(false) {}
 
 Client::~Client() {}
 
@@ -41,7 +42,17 @@ const std::string& Client::getUsername() const {
 }
 
 bool Client::isRegistered() const {
-	return _nickOK && _userOK;
+	if (_nickOK == true && _userOK == true) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+void Client::setUnRegistered() {
+	_registered = false;
+	_nickOK = false;
+	_userOK = false;
 }
 
 bool Client::getAuthenticated() const {
@@ -65,16 +76,26 @@ void Client::registerUser() {
 }
 
 void Client::clear() {
-    close(_fd);
-    _fd = 0;
+    if (_fd > 0) {
+        close(_fd);
+    }
+    _fd = -1;
     _nickname.clear();
     _username.clear();
     _registered = false;
 	_authenticated = false;
+	_nickOK = false;
+	_userOK = false;
+	_recvBuffer.clear();
 }
 
 void Client::sendMessage(const std::string& msg) const {
-	send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL);
+	if (_fd <= 0) return;
+	
+	ssize_t result = send(_fd, msg.c_str(), msg.length(), MSG_NOSIGNAL);
+	if (result == -1) {
+		std::cerr << "Error sending message to client " << _nickname << std::endl;
+	}
 }
 
 void Client::sendReply(const std::string& code, const std::string& message)

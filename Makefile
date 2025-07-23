@@ -20,11 +20,17 @@ WHITE = $(shell tput setaf 7)
 
 #########################################################################
 
-SRC_FILES = Main.cpp Server.cpp Client.cpp Channel.cpp \
-			commands/CommandHandler.cpp \
-			commands/Join.cpp commands/NickUser.cpp commands/Privmsg.cpp \
-			commands/Quit.cpp commands/Mode.cpp commands/Kick.cpp \
-			commands/Invite.cpp commands/Pass.cpp\
+MAIN_FILES = main.cpp
+
+ENTITIES_FILES = Server.cpp Client.cpp Channel.cpp
+
+COMMANDS_FILES = CommandHandler.cpp Join.cpp NickUser.cpp Privmsg.cpp \
+				Quit.cpp Mode.cpp Kick.cpp Invite.cpp Pass.cpp Topic.cpp
+
+ENTITIES_FULL = $(addprefix entities/, $(ENTITIES_FILES))
+COMMANDS_FULL = $(addprefix commands/, $(COMMANDS_FILES))
+
+SRC_FILES = $(MAIN_FILES) $(ENTITIES_FULL) $(COMMANDS_FULL)
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ = $(addprefix $(OBJ_DIR)/, $(SRC_FILES:.cpp=.o))

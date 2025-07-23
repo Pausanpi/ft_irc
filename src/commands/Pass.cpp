@@ -23,13 +23,18 @@ void CommandHandler::handlePASS(Client &client, std::istringstream &iss, const s
 		return;
 	}
 
+	if (client.getAuthenticated())
+	{
+		client.sendReply("462", "PASS :Unauthorized command (already registered)");
+		return;
+	}
+
 	if (pass != password)
 	{
-		client.sendReply("464", "PASS: Password incorrect");
+		client.sendReply("464", "PASS :Password incorrect");
 		return;
 	}
 
 	client.setAutenticated(true);
-	// TODO: se supone que segun el protocolo IRC esto es erroneo
-	client.sendMessage(":irc : Correct Password!\r\n");
+	client.sendMessage("NOTICE AUTH :*** Password accepted. Please provide NICK and USER commands.\r\n");
 }

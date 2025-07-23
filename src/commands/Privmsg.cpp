@@ -17,22 +17,34 @@ void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss)
     std::string target;
     iss >> target;
 
+    if (target.empty()) {
+        client.sendReply("411", ":No recipient given (PRIVMSG)");
+        return;
+    }
+
     std::string msg;
-    std::getline(iss, msg);
-
-    size_t pos = msg.find_first_not_of(' ');
-    if (pos != std::string::npos)
-    {
-        msg = msg.substr(pos);
+    std::string peek;
+    iss >> peek;
+    
+    if (!peek.empty() && peek[0] == ':') {
+        msg = peek.substr(1);
+        std::string rest;
+        std::getline(iss, rest);
+        if (!rest.empty()) {
+            msg += rest;
+        }
+    } else {
+        msg = peek;
+        std::string rest;
+        std::getline(iss, rest);
+        if (!rest.empty()) {
+            msg += rest;
+        }
     }
-    else
-    {
-        msg.clear();
-    }
 
-    if (!msg.empty() && msg[0] == ':')
-    {
-        msg = msg.substr(1);
+    if (msg.empty()) {
+        client.sendReply("412", ":No text to send");
+        return;
     }
 
     std::ostringstream oss;
@@ -50,7 +62,7 @@ void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss)
 
             if (members.find(&client) == members.end())
             {
-                client.sendReply("404", client.getNickname() + " " + target + " :Cannot send to channel (not a member)\r\n");
+                client.sendReply("404", target + " :Cannot send to channel");
                 return;
             }
 
@@ -65,7 +77,7 @@ void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss)
         }
         else
         {
-            client.sendReply("403", client.getNickname() + " " + target + " :No such channel\r\n");
+            client.sendReply("403", target + " :No such channel");
         }
     }
     else
@@ -82,7 +94,7 @@ void CommandHandler::handlePRIVMSG(Client &client, std::istringstream &iss)
         }
         if (!found)
         {
-            client.sendReply("401", client.getNickname() + " " + target + " :No such nick/channel\r\n");
+            client.sendReply("401", target + " :No such nick/channel");
         }
     }
 }

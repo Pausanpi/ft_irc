@@ -6,7 +6,7 @@
 /*   By: pausanch <pausanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:34:15 by pausanch          #+#    #+#             */
-/*   Updated: 2025/06/11 15:24:48 by pausanch         ###   ########.fr       */
+/*   Updated: 2025/07/15 11:59:34 by pausanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ private:
 	std::string _modes;
 	std::string _key;
 	int	_limitmember;
+	std::string _topic;
+	bool _modeTopic;
 
 public:
 	Channel();
@@ -41,8 +43,10 @@ public:
 
 	void addOperator(Client* client);
 	void removeOperator(Client* client);
+	const std::set<Client*>& getOperators() const;
 	bool isOperator(Client* client) const;
 	void broadcast(const std::string &msg);
+	void broadcastToOthers(const std::string &msg, Client* excludeClient);
 
 	void addInvited(Client* client);
 	bool isInvited(Client* client) const;
@@ -52,6 +56,7 @@ public:
 	void addMode(char mode);
 	void removeMode(char mode);
 	bool hasMode(char mode) const;
+	std::string getModes() const;
 
 	void setKey(const std::string& key);
 	void removeKey();
@@ -62,6 +67,13 @@ public:
 	int getlimit();
 	void removelimit();
 	int getnumberofmembers();
+
+	std::string getUserList() const;
+	
+	void setTopic(const std::string& topic);
+	const std::string& getTopic() const;
+	bool hasModeTopic() const;
+	void setModeTopic(bool mode);
 	
 };
 
